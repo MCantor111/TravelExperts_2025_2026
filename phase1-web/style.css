@@ -151,3 +151,100 @@ footer {
 #hero {
   animation: fadeZoom 2.5s ease-out forwards;
 }
+
+/* === HERO BACKGROUND ANIMATION === */
+@keyframes auroraFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* === HERO SECTION === */
+@keyframes auroraFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes auroraText {
+  0% {
+    color: #0b0c10; /* dark */
+  }
+  25% {
+    color: #1f2833; /* dim teal */
+  }
+  50% {
+    color: var(--highlight); /* bright cyan peak */
+  }
+  75% {
+    color: #1f2833; /* fading */
+  }
+  100% {
+    color: #0b0c10;
+  }
+}
+
+#hero {
+  background: linear-gradient(270deg, #0b0c10, #1f2833, #45a29e, #66fcf1);
+  background-size: 400% 400%;
+  animation: auroraFlow 12s ease-in-out infinite;
+  border-radius: 12px;
+  text-align: center;
+  padding: 3rem 1rem;
+  box-shadow: 0 0 30px rgba(102, 252, 241, 0.2);
+  overflow: hidden;
+}
+
+#hero h2 {
+  animation: auroraText 12s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(102, 252, 241, 0.3);
+  transition: text-shadow 1s ease;
+}
+
+/* === BUTTON PULSE AESTHETIC === */
+@keyframes auroraPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(102, 252, 241, 0.2),
+                0 0 10px rgba(102, 252, 241, 0.1);
+    transform: scale(1);
+  }
+  25%, 75% {
+    box-shadow: 0 0 15px rgba(102, 252, 241, 0.4),
+                0 0 25px rgba(102, 252, 241, 0.2);
+    transform: scale(1.02);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(102, 252, 241, 0.6),
+                0 0 45px rgba(102, 252, 241, 0.3);
+    transform: scale(1.04);
+  }
+}
+
+.card button {
+  animation: auroraPulse 12s ease-in-out infinite;
+  background-color: #45a29e;
+  color: #0b0c10;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.card button:hover {
+  background-color: #66fcf1;
+  transform: scale(1.08);
+}
