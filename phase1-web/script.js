@@ -36,3 +36,15 @@ document.addEventListener("DOMContentLoaded", () => {
 function bookNow(destination) {
   alert(`Booking request submitted for ${destination}!`);
 }
+
+window.addEventListener('scroll', () => {
+  document.querySelectorAll('nav a').forEach(link => {
+    const section = document.querySelector(link.getAttribute('href'));
+    const rect = section.getBoundingClientRect();
+    if (rect.top <= 150 && rect.bottom >= 150) {
+      link.style.color = 'var(--highlight)';
+    } else {
+      link.style.color = 'var(--accent)';
+    }
+  });
+});
