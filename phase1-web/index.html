@@ -3,50 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Travel Experts | Explore the World</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Travel Experts</title>
+  <script src="script.js" defer></script>
 </head>
 <body>
   <header>
-    <h1>🌍 Travel Experts</h1>
+    <h1>Travel Experts</h1>
     <nav>
-      <a href="#">Home</a>
-      <a href="#">Destinations</a>
-      <a href="#">Packages</a>
-      <a href="#">Contact</a>
+      <a href="#hero">Home</a>
+      <a href="#destinations">Destinations</a>
+      <a href="#contact">Contact</a>
     </nav>
   </header>
 
-  <main>
-    <section class="hero">
-      <h2>Your Adventure Starts Here</h2>
-      <p>Book your dream vacation with confidence. Discover exclusive offers and expert advice.</p>
-      <button id="learnMoreBtn">Learn More</button>
-    </section>
+  <section id="hero">
+    <h2>Discover Your Next Adventure</h2>
+    <img id="hero-image" src="https://via.placeholder.com/800x300" alt="Travel Destination" />
+  </section>
 
-    <section class="cards">
-      <div class="card">
-        <img src="https://source.unsplash.com/400x250/?beach" alt="Beach destination">
-        <h3>Tropical Paradise</h3>
-        <p>Relax on crystal-clear beaches and enjoy world-class resorts.</p>
-      </div>
-      <div class="card">
-        <img src="https://source.unsplash.com/400x250/?mountains" alt="Mountain destination">
-        <h3>Mountain Escape</h3>
-        <p>Explore breathtaking peaks and serene landscapes.</p>
-      </div>
-      <div class="card">
-        <img src="https://source.unsplash.com/400x250/?city" alt="City destination">
-        <h3>City Adventures</h3>
-        <p>Immerse yourself in culture, cuisine, and nightlife.</p>
-      </div>
-    </section>
-  </main>
+  <section id="destinations">
+    <h2>Popular Destinations</h2>
+    <div class="card" data-place="Bali">
+      <h3>Bali</h3>
+      <button onclick="bookNow('Bali')">Book Now</button>
+    </div>
+    <div class="card" data-place="Tokyo">
+      <h3>Tokyo</h3>
+      <button onclick="bookNow('Tokyo')">Book Now</button>
+    </div>
+    <div class="card" data-place="Paris">
+      <h3>Paris</h3>
+      <button onclick="bookNow('Paris')">Book Now</button>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p>Email us at <a href="mailto:info@travelexperts.com">info@travelexperts.com</a></p>
+  </section>
 
   <footer>
-    <p>© 2025 Travel Experts — All rights reserved.</p>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
   </footer>
-
-  <script src="script.js"></script>
 </body>
 </html>
