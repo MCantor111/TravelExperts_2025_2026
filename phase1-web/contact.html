@@ -1,13 +1,118 @@
+<!-- 
+  ============================================
+  File: contact.html
+  Project: Travel Experts – Workshop 1
+  Author: Cantor (Matte Black ᗰტ)
+  Partner: Metacoda (☣️ケイオバリア☣️)
+  Date: 2025-10-18
+  Description:
+    Contact page for Travel Experts.
+    Allows users to submit inquiries via a validated form,
+    and displays company headquarters information.
+    Includes consistent styling and hero section for branding.
+  ============================================
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- 
+    Meta & Document Configuration
+    - UTF-8 ensures global character compatibility.
+    - Responsive design supported through viewport meta tag.
+  -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Travel Experts | Contact</title>
+
+  <!-- Linked global stylesheet and JavaScript -->
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
+
+  <!-- 
+    Inline Style Block
+    - Provides page-specific styling adjustments for the contact form
+      and company info sections without modifying global CSS.
+  -->
+  <style>
+    /* === CONTACT FORM FIXES === */
+    #contact {
+      text-align: center;
+      padding: 2rem 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    #contactForm {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding: 2rem;
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+    }
+
+    #contactForm label {
+      font-weight: bold;
+      color: var(--highlight);
+      margin-bottom: 0.3rem;
+    }
+
+    #contactForm input,
+    #contactForm textarea {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 0.6rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    #contactForm button {
+      align-self: center;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: bold;
+      padding: 0.7rem 1.5rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    #contactForm button:hover {
+      background: var(--highlight);
+      transform: scale(1.05);
+    }
+
+    /* === COMPANY INFO === */
+    #company-info {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 3rem;
+      box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+    }
+
+    #company-info h3 {
+      color: var(--highlight);
+      margin-bottom: 1rem;
+    }
+
+    #company-info p {
+      margin: 0.3rem 0;
+      color: var(--text);
+    }
+  </style>
 </head>
+
 <body>
+  <!-- ================= HEADER ================= -->
+  <!-- Consistent navigation bar across all pages -->
   <header>
     <h1>Travel Experts</h1>
     <nav>
@@ -18,43 +123,74 @@
     </nav>
   </header>
 
+  <!-- ================= MAIN CONTENT ================= -->
   <main>
+    <!-- === HERO SECTION === -->
+    <!-- Displays thematic image and title for page identity -->
     <section id="hero">
       <h2>Get in Touch</h2>
-      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Ocean horizon at sunset" />
+      <img 
+        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" 
+        alt="Ocean horizon at sunset" 
+      />
     </section>
 
+    <!-- === CONTACT FORM SECTION === -->
+    <!-- Users can send inquiries or feedback -->
     <section id="contact">
       <h2>We’d Love to Hear From You</h2>
       <p>Have a question about our trips, or just want to say hello? Drop us a line below!</p>
 
-      <form id="contactForm" onsubmit="return sendMessage()" style="max-width:500px; margin:auto; text-align:left;">
+      <form id="contactForm" onsubmit="return sendMessage()">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" placeholder="Enter your name" required />
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          placeholder="Enter your name" 
+          required 
+        />
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required />
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          placeholder="Enter your email" 
+          required 
+        />
 
         <label for="message">Message:</label>
-        <textarea id="message" name="message" rows="5" placeholder="Type your message here..." required></textarea>
+        <textarea 
+          id="message" 
+          name="message" 
+          rows="5" 
+          placeholder="Type your message here..." 
+          required
+        ></textarea>
 
         <button type="submit">Send Message</button>
       </form>
 
-      <div style="margin-top:3rem;">
-        <h3>Visit Us</h3>
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.967991258262!2d2.292292615674263!3d48.858373979287816!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66fdebdf5dfb3%3A0x60c4422a9cf3f0c!2sEiffel%20Tower!5e0!3m2!1sen!2sca!4v1633459086815!5m2!1sen!2sca"
-          width="100%" height="300" style="border:0; border-radius:12px; box-shadow:0 0 20px rgba(102,252,241,0.3);" allowfullscreen="" loading="lazy">
-        </iframe>
+      <!-- === COMPANY INFORMATION SECTION === -->
+      <!-- Static content listing corporate contact details -->
+      <div id="company-info">
+        <h3>Our Headquarters</h3>
+        <p><strong>Address:</strong> 123 Aurora Blvd, Calgary, AB, Canada</p>
+        <p><strong>Phone:</strong> +1 (403) 555-8192</p>
+        <p><strong>Email:</strong> contact@travelexperts.ca</p>
+        <p><strong>Hours:</strong> Mon–Fri: 9:00AM–6:00PM MDT</p>
       </div>
     </section>
   </main>
 
+  <!-- ================= FOOTER ================= -->
   <footer>
     <p>© 2025 Travel Experts Inc. All rights reserved.</p>
   </footer>
 
+  <!-- ================= INLINE VALIDATION SCRIPT ================= -->
+  <!-- Validates user input and displays confirmation -->
   <script>
     function sendMessage() {
       const name = document.getElementById('name').value.trim();
