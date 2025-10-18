@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const heroImages = [
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e", // Bali
       "https://images.unsplash.com/photo-1549693578-d683be217e58",   // Tokyo
-      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34" // Paris
+      "https://images.unsplash.com/photo-1541338906008-f2d4ad1b2231" // Paris
     ];
     let current = 0;
     setInterval(() => {
