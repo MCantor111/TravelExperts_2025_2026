@@ -85,3 +85,92 @@ function sendMessage() {
   alert(`Thank you, ${name}! Your message has been sent. We'll get back to you soon.`);
   return true;
 }
+
+// =========================
+// Registration Form Validation
+// =========================
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("registrationForm");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); // prevent page reload
+    if (!validateRegistration()) return;
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: formData,
+      });
+
+      const text = await response.text();
+      console.log("Server response:", text);
+
+      // Display the server response dynamically on-page
+      const resultDiv = document.createElement("div");
+      resultDiv.style.marginTop = "2rem";
+      resultDiv.style.padding = "1rem";
+      resultDiv.style.background = "rgba(69,162,158,0.15)";
+      resultDiv.style.borderRadius = "8px";
+      resultDiv.innerHTML = text;
+      form.parentNode.appendChild(resultDiv);
+
+    } catch (err) {
+      alert("Something went wrong: " + err.message);
+    }
+  });
+});
+
+function validateRegistration() {
+  const required = [
+    "custFirstName", "custLastName", "custAddress", "custCity", "custProv",
+    "custCountry", "custPostal", "custEmail", "custHomePhone", "userId", "custPassword"
+  ];
+
+  for (const id of required) {
+    const field = document.getElementById(id);
+    if (!field.value.trim()) {
+      alert(`Please fill out the ${id.replace("cust", "").replace(/([A-Z])/g, " $1")} field.`);
+      field.focus();
+      return false;
+    }
+  }
+
+  const email = document.getElementById("custEmail").value;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert("Please enter a valid email address.");
+    return false;
+  }
+
+  return true;
+}
+
+// ======= BOOKING VALIDATION POPUP =======
+// === POPUP LOGIC (for inline onclick buttons) ===
+function openBookingPopup(destination) {
+  const popup = document.getElementById("login-popup");
+  popup.classList.remove("hidden");
+  popup.dataset.destination = destination;
+}
+
+document.getElementById("popup-cancel").addEventListener("click", () => {
+  const popup = document.getElementById("login-popup");
+  popup.classList.add("hidden");
+});
+
+document.getElementById("popup-submit").addEventListener("click", () => {
+  const userId = document.getElementById("popup-userid").value.trim();
+  const password = document.getElementById("popup-password").value.trim();
+  const popup = document.getElementById("login-popup");
+  const destination = popup.dataset.destination || "your selected trip";
+
+  if (userId === "userid" && password === "password") {
+    alert(`✅ Booking confirmed for ${destination}!`);
+  } else {
+    alert("❌ Invalid credentials. Please try again.");
+  }
+
+  popup.classList.add("hidden");
+});
