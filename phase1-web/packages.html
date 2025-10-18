@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Experts | Destinations</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Travel Experts</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="packages.html" class="active">Destinations</a>
+      <a href="register.html">Register</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="hero">
+      <h2>Popular Destinations</h2>
+      <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0" alt="Eiffel Tower and Paris skyline" />
+    </section>
+
+    <section id="destinations">
+      <div class="card" data-place="Bali">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Bali Beach Sunset" />
+        <h3>Bali</h3>
+        <p>Golden sands, coral reefs, and tropical tranquility — a perfect paradise escape.</p>
+        <button onclick="bookNow('Bali')">Book Now</button>
+      </div>
+
+      <div class="card" data-place="Tokyo">
+        <img src="https://images.unsplash.com/photo-1549693578-d683be217e58" alt="Tokyo Skyline at Night" />
+        <h3>Tokyo</h3>
+        <p>Immerse yourself in neon nights, ancient shrines, and cutting-edge culture.</p>
+        <button onclick="bookNow('Tokyo')">Book Now</button>
+      </div>
+
+      <div class="card" data-place="Paris">
+        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34" alt="Paris Eiffel Tower" />
+        <h3>Paris</h3>
+        <p>The City of Lights awaits with art, cuisine, and romance on every street.</p>
+        <button onclick="bookNow('Paris')">Book Now</button>
+      </div>
+    </section>
+
+    <section style="text-align:center; margin-top:2rem;">
+      <a href="register.html">
+        <button>Register to Book Your Trip</button>
+      </a>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
+  </footer>
+</body>
+</html>

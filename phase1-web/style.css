@@ -280,3 +280,54 @@ footer {
   background-color: #66fcf1;
   transform: scale(1.08);
 }
+
+/* === PAGE WRAPPERS === */
+main {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.hero-section, .form-section, .contact-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/* highlight active nav link */
+nav a.active {
+  color: var(--highlight);
+  text-shadow: 0 0 8px var(--highlight);
+}
+
+form {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: var(--surface);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+label {
+  font-weight: bold;
+  color: var(--highlight);
+}
+
+input {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 2rem;
+}

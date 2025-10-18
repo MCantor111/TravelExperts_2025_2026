@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Registration | Travel Experts</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Travel Experts</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="register.html" class="active">Register</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section id="hero">
+    <h2>Customer Registration</h2>
+  </section>
+
+  <section id="registration-intro" style="text-align: center; padding: 1rem;">
+    <p>Set up your Travel Experts account below.</p>
+  </section>
+
+  <section id="registration">
+    <form action="bouncer.php" method="post" onsubmit="return validateRegistration();">
+      <div class="form-grid">
+        <label for="custFirstName">First Name:</label>
+        <input type="text" id="custFirstName" name="custFirstName" required />
+
+        <label for="custLastName">Last Name:</label>
+        <input type="text" id="custLastName" name="custLastName" required />
+
+        <label for="custAddress">Address:</label>
+        <input type="text" id="custAddress" name="custAddress" required />
+
+        <label for="custCity">City:</label>
+        <input type="text" id="custCity" name="custCity" required />
+
+        <label for="custProv">Province:</label>
+        <input type="text" id="custProv" name="custProv" required />
+
+        <label for="custCountry">Country:</label>
+        <input type="text" id="custCountry" name="custCountry" required />
+
+        <label for="custPostal">Postal Code:</label>
+        <input type="text" id="custPostal" name="custPostal" required />
+
+        <label for="custEmail">Email:</label>
+        <input type="email" id="custEmail" name="custEmail" required />
+
+        <label for="custHomePhone">Home Phone:</label>
+        <input type="tel" id="custHomePhone" name="custHomePhone" required />
+
+        <label for="custBusPhone">Business Phone:</label>
+        <input type="tel" id="custBusPhone" name="custBusPhone" />
+
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" name="userId" required />
+
+        <label for="custPassword">Password:</label>
+        <input type="password" id="custPassword" name="custPassword" required />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Register</button>
+        <button type="reset">Clear</button>
+      </div>
+    </form>
+  </section>
+
+  <footer>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
+  </footer>
+</body>
+</html>
