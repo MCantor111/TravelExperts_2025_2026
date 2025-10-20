@@ -1,0 +1,115 @@
+<!-- 
+  ============================================
+  File: packages.html
+  Project: Travel Experts – Workshop 1
+  Author: Cantor (Matte Black ᗰტ)
+  Partner: Metacoda (☣️ケイオバリア☣️)
+  Date: 2025-10-18
+  Description:
+    Displays featured travel packages offered by Travel Experts.
+    Each package includes an image, description, and a simulated
+    booking flow using a login popup (for demonstration only).
+  ============================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- 
+    Meta & Document Settings
+    - UTF-8 ensures universal character support.
+    - Viewport for responsive scaling on mobile devices.
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Packages | Travel Experts</title>
+
+  <!-- Linked stylesheet & global JS functionality -->
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <!-- ================= HEADER ================= -->
+  <!-- Global navigation bar for site-wide consistency -->
+  <header>
+    <h1>Travel Experts</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="packages.html" class="active">Packages</a>
+      <a href="register.html">Register</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ================= HERO SECTION ================= -->
+  <!-- Static header introducing the page topic -->
+  <section id="hero">
+    <h2>Our Exclusive Travel Packages</h2>
+  </section>
+
+  <!-- ================= PACKAGES SECTION ================= -->
+  <!-- Each card represents a travel destination with image and description -->
+  <section id="packages">
+
+    <!-- === CARD 1: TOKYO === -->
+    <div class="card card1">
+      <img 
+        src="https://images.unsplash.com/photo-1549693578-d683be217e58" 
+        alt="Tokyo Skyline" 
+      />
+      <h3>Tokyo Adventure</h3>
+      <p>Experience the neon city of the future.</p>
+      <button onclick="openBookingPopup('Tokyo Adventure')">Book Now</button>
+    </div>
+
+    <!-- === CARD 2: PARIS === -->
+    <div class="card card2">
+      <img 
+        src="https://images.unsplash.com/photo-1541338906008-f2d4ad1b2231" 
+        alt="Paris Getaway" 
+      />
+      <h3>Paris Escape</h3>
+      <p>Romance and culture in the heart of France.</p>
+      <button onclick="openBookingPopup('Paris Escape')">Book Now</button>
+    </div>
+
+    <!-- === CARD 3: BALI === -->
+    <div class="card card3">
+      <img 
+        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" 
+        alt="Bali Getaway" 
+      />
+      <h3>Bali Getaway</h3>
+      <p>7 nights in paradise. Sun, surf, and temples.</p>
+      <button onclick="openBookingPopup('Bali Getaway')">Book Now</button>
+    </div>
+  </section>
+
+  <!-- ================= LOGIN POPUP ================= -->
+  <!-- Simulated user verification popup for demo purposes -->
+  <div id="login-popup" class="popup hidden">
+    <div class="popup-content">
+      <h3>User Verification</h3>
+
+      <label for="popup-userid">User ID:</label>
+      <input type="text" id="popup-userid" placeholder="Enter your user ID" />
+
+      <label for="popup-password">Password:</label>
+      <input type="password" id="popup-password" placeholder="Enter your password" />
+
+      <div class="popup-actions">
+        <button id="popup-submit">Verify</button>
+        <button id="popup-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <!-- Footer present across all pages -->
+  <footer>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
+  </footer>
+</body>
+</html>
