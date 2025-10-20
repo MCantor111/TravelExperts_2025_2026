@@ -240,23 +240,89 @@ function openBookingPopup(destination) {
   popup.dataset.destination = destination;
 }
 
-// Cancel button hides the popup without doing anything.
-document.getElementById("popup-cancel").addEventListener("click", () => {
-  document.getElementById("login-popup").classList.add("hidden");
-});
-
-// Submit button checks user credentials (mock validation).
-document.getElementById("popup-submit").addEventListener("click", () => {
-  const userId = document.getElementById("popup-userid").value.trim();
-  const password = document.getElementById("popup-password").value.trim();
+// =========================
+// BOOKING POPUP VALIDATION (Safe)
+// =========================
+function openBookingPopup(destination) {
   const popup = document.getElementById("login-popup");
-  const destination = popup.dataset.destination || "your selected trip";
+  if (!popup) return;
+  popup.classList.remove("hidden");
+  popup.dataset.destination = destination;
+}
 
-  if (userId === "userid" && password === "password") {
-    alert(`✅ Booking confirmed for ${destination}!`);
-  } else {
-    alert("❌ Invalid credentials. Please try again.");
+// Only attach listeners if elements exist
+const cancelBtn = document.getElementById("popup-cancel");
+if (cancelBtn) {
+  cancelBtn.addEventListener("click", () => {
+    document.getElementById("login-popup").classList.add("hidden");
+  });
+}
+
+const submitBtn = document.getElementById("popup-submit");
+if (submitBtn) {
+  submitBtn.addEventListener("click", () => {
+    const userId = document.getElementById("popup-userid")?.value.trim();
+    const password = document.getElementById("popup-password")?.value.trim();
+    const popup = document.getElementById("login-popup");
+    const destination = popup?.dataset.destination || "your selected trip";
+
+    if (userId === "userid" && password === "password") {
+      alert(`✅ Booking confirmed for ${destination}!`);
+    } else {
+      alert("❌ Invalid credentials. Please try again.");
+    }
+
+    popup?.classList.add("hidden");
+  });
+}
+
+
+// ========== Dynamic Package Loader ==========
+document.addEventListener("DOMContentLoaded", async () => {
+  const container = document.querySelector("#packages-container");
+  if (!container) return;
+
+  try {
+    const res = await fetch("/api/packages");
+    const { ok, data } = await res.json();
+    if (!ok) throw new Error("Bad API response");
+
+    container.innerHTML = "";
+    const now = new Date();
+
+    data.forEach(pkg => {
+      const started = new Date(pkg.PkgStartDate) < now;
+      const card = document.createElement("div");
+      card.className = "card";
+
+      // Assign images per package
+      const imgMap = {
+        "European Vacation": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34", // Eiffel Tower at dusk
+        "Polynesian Paradise": "https://images.unsplash.com/photo-1493558103817-58b2924bce98", // Hawaiian beach sunrise
+        "Caribbean New Year": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e", // Turquoise Caribbean sea
+        "Asian Expedition": "https://images.unsplash.com/photo-1549693578-d683be217e58" // Tokyo Shibuya lights
+      };
+
+      const imgSrc = imgMap[pkg.PkgName] || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e";
+
+      // Build card layout
+      card.innerHTML = `
+        <img src="${imgSrc}" alt="${pkg.PkgName}" />
+        <h3>${pkg.PkgName}</h3>
+        <p>${pkg.PkgDesc}</p>
+        <p class="${started ? "started" : ""}">
+          <strong>Start:</strong> ${pkg.PkgStartDate.slice(0,10)}
+        </p>
+        <p><strong>End:</strong> ${pkg.PkgEndDate.slice(0,10)}</p>
+        <p><strong>Price:</strong> $${Number(pkg.PkgBasePrice).toFixed(2)}</p>
+        <button class="order-btn">Order Now</button>
+      `;
+      container.appendChild(card);
+    });
+
+  } catch (err) {
+    console.error(err);
+    container.innerHTML =
+      "<p class='error'>Error loading packages. Please try again later.</p>";
   }
-
-  popup.classList.add("hidden");
 });

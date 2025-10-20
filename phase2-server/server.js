@@ -159,3 +159,33 @@ app.post('/api/orders', async (req, res) => {
 
 const port = parseInt(process.env.PORT || '3000', 10);
 app.listen(port, () => console.log(`Travel Experts API running on http://localhost:${port}`));
+
+// ========== Packages Page ==========
+document.addEventListener("DOMContentLoaded", async () => {
+  const pkgTable = document.querySelector("#packagesTable tbody");
+  if (!pkgTable) return;
+
+  try {
+    const res = await fetch("/api/packages");
+    const { ok, data } = await res.json();
+    if (!ok) throw new Error("Bad API response");
+
+    pkgTable.innerHTML = "";
+    for (const pkg of data) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${pkg.PkgName}</td>
+        <td>${pkg.PkgStartDate.slice(0, 10)}</td>
+        <td>${pkg.PkgEndDate.slice(0, 10)}</td>
+        <td>${pkg.PkgBasePrice.toFixed(2)}</td>
+        <td>${pkg.PkgAgencyCommission.toFixed(2)}</td>
+        <td>${pkg.PkgDesc}</td>
+      `;
+      if (pkg.Started) tr.style.color = "red";
+      pkgTable.appendChild(tr);
+    }
+  } catch (err) {
+    console.error("Failed to load packages:", err);
+    pkgTable.innerHTML = "<tr><td colspan='6'>Error loading packages.</td></tr>";
+  }
+});
