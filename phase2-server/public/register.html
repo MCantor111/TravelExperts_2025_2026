@@ -1,0 +1,134 @@
+<!-- 
+  ============================================
+  File: register.html
+  Project: Travel Experts – Workshop 1
+  Author: Cantor (Matte Black ᗰტ)
+  Partner: Metacoda (☣️ケイオバリア☣️)
+  Date: 2025-10-18
+  Description:
+    Registration page for new Travel Experts customers.
+    Collects user details (name, address, contact, credentials)
+    and validates them through script.js before posting data 
+    to a PHP handler (bouncer.php).
+  ============================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- 
+    Meta & Document Settings
+    - UTF-8 for universal character encoding.
+    - Viewport ensures responsive scaling across devices.
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Customer Registration | Travel Experts</title>
+
+  <!-- Shared stylesheet & core JavaScript logic -->
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <!-- ================= HEADER ================= -->
+  <!-- Consistent navigation menu across all pages -->
+  <header>
+    <h1>Travel Experts</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="register.html" class="active">Register</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ================= HERO SECTION ================= -->
+  <!-- Themed header introducing the purpose of this page -->
+  <section id="hero">
+    <h2>Customer Registration</h2>
+  </section>
+
+  <!-- ================= INTRO TEXT ================= -->
+  <!-- Short description prompting user to register -->
+  <section id="registration-intro" style="text-align: center; padding: 1rem;">
+    <p>Set up your Travel Experts account below.</p>
+  </section>
+
+  <!-- ================= REGISTRATION FORM ================= -->
+  <!-- Collects customer details and credentials -->
+  <section id="registration">
+    <form id="registrationForm" action="bouncer.php" method="post" novalidate>
+      <div class="form-grid">
+        <!-- === Personal Information === -->
+        <label for="custFirstName">First Name:</label>
+        <input type="text" id="custFirstName" name="custFirstName" required />
+
+        <label for="custLastName">Last Name:</label>
+        <input type="text" id="custLastName" name="custLastName" required />
+
+        <label for="custAddress">Address:</label>
+        <input type="text" id="custAddress" name="custAddress" required />
+
+        <label for="custCity">City:</label>
+        <input type="text" id="custCity" name="custCity" required />
+
+        <label for="custProv">Province:</label>
+        <input type="text" id="custProv" name="custProv" required />
+
+        <label for="custCountry">Country:</label>
+        <input type="text" id="custCountry" name="custCountry" required />
+
+        <!-- === Postal & Contact Info === -->
+        <label for="custPostal">Postal Code:</label>
+        <input 
+          type="text" 
+          id="custPostal" 
+          name="custPostal" 
+          placeholder="e.g. T2N 1N4" 
+          required 
+        />
+
+        <label for="custEmail">Email:</label>
+        <input type="email" id="custEmail" name="custEmail" required />
+
+        <label for="custHomePhone">Home Phone:</label>
+        <input 
+          type="tel" 
+          id="custHomePhone" 
+          name="custHomePhone" 
+          placeholder="e.g. 403-555-8192" 
+          required 
+        />
+
+        <label for="custBusPhone">Business Phone:</label>
+        <input 
+          type="tel" 
+          id="custBusPhone" 
+          name="custBusPhone" 
+          placeholder="Optional" 
+        />
+
+        <!-- === Account Credentials === -->
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" name="userId" required />
+
+        <label for="custPassword">Password:</label>
+        <input type="password" id="custPassword" name="custPassword" required />
+      </div>
+
+      <!-- === Form Action Buttons === -->
+      <div class="form-actions">
+        <button type="submit">Register</button>
+        <button type="reset">Clear</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
+  </footer>
+</body>
+</html>
