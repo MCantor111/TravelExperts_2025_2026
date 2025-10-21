@@ -365,3 +365,127 @@ input {
 .card * {
   background-color: transparent !important;
 }
+
+/* === CARD PULSE AESTHETIC === */
+@keyframes cardPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(102, 252, 241, 0.1),
+                0 0 30px rgba(69, 162, 158, 0.05);
+    transform: scale(1);
+  }
+  25%, 75% {
+    box-shadow: 0 0 25px rgba(102, 252, 241, 0.2),
+                0 0 40px rgba(69, 162, 158, 0.1);
+    transform: scale(1.01);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(102, 252, 241, 0.3),
+                0 0 60px rgba(69, 162, 158, 0.15);
+    transform: scale(1.015);
+  }
+}
+
+.card {
+  animation: cardPulse 14s ease-in-out infinite;
+}
+
+/* === AGENCIES SECTION === */
+.agency-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3rem;
+  margin: 2rem auto;
+  max-width: 1400px; /* widened the entire container */
+}
+
+.agency-card {
+  flex: 1 1 380px; /* grow, shrink, base width */
+  background: linear-gradient(180deg, #111418 0%, #0b0c10 100%);
+  border: 1px solid rgba(102, 252, 241, 0.15);
+  border-radius: 14px;
+  color: var(--text);
+  padding: 2rem;
+  min-width: 340px;
+  max-width: 420px;
+  box-shadow: 0 0 25px rgba(102, 252, 241, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.4s ease;
+  margin: 0 auto;
+  backdrop-filter: blur(8px);
+  background: rgba(17, 20, 24, 0.85);
+}
+
+
+
+.agency-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px rgba(102, 252, 241, 0.25);
+}
+
+.agency-card h3 {
+  color: var(--highlight);
+  text-shadow: 0 0 8px rgba(102, 252, 241, 0.4);
+  margin-bottom: 0.6rem;
+}
+
+.agency-address, .agency-phone, .agency-fax {
+  font-size: 0.9rem;
+  margin: 0.3rem 0;
+}
+
+.agent-list {
+  margin-top: 1rem;
+  border-top: 1px solid rgba(102, 252, 241, 0.15);
+  padding-top: 0.8rem;
+}
+
+.agent-card {
+  margin-bottom: 0.8rem;
+  background: rgba(69, 162, 158, 0.1);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  box-shadow: 0 0 5px rgba(102, 252, 241, 0.2);
+  width: calc(100% + 6ch); /* adds ~6 characters of horizontal room */
+  max-width: 320px;        /* keeps layout tidy on large screens */
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+.agent-card a {
+  color: var(--highlight);
+  text-decoration: none;
+}
+
+.agent-card a:hover {
+  text-decoration: underline;
+}
+
+.agent-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 10px rgba(102, 252, 241, 0.3);
+  transition: transform 0.3s ease;
+}
+.agent-photo:hover {
+  transform: scale(1.08);
+}
+
+.agent-card a {
+  color: var(--highlight);
+  text-decoration: none;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.agent-card a:hover {
+  text-decoration: underline;
+}

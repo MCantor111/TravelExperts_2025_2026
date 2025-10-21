@@ -189,3 +189,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     pkgTable.innerHTML = "<tr><td colspan='6'>Error loading packages.</td></tr>";
   }
 });
+
+app.get("/api/agencies", async (req, res) => {
+  try {
+    const [agencies] = await db.query("SELECT * FROM agencies");
+    const [agents] = await db.query("SELECT * FROM agents");
+
+    // group agents under their agency
+    const grouped = agencies.map(a => ({
+      ...a,
+      agents: agents.filter(g => g.AgencyId === a.AgencyId)
+    }));
+
+    res.json({ ok: true, data: grouped });
+  } catch (err) {
+    console.error("Error fetching agencies:", err);
+    res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
+
+app.get("/api/agencies", async (req, res) => {
+  try {
+    const [agencies] = await db.query("SELECT * FROM agencies");
+    const [agents] = await db.query("SELECT * FROM agents");
+
+    // group agents under their agency
+    const grouped = agencies.map(a => ({
+      ...a,
+      agents: agents.filter(g => g.AgencyId === a.AgencyId)
+    }));
+
+    res.json({ ok: true, data: grouped });
+  } catch (err) {
+    console.error("Error fetching agencies:", err);
+    res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
