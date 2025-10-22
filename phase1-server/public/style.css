@@ -519,3 +519,16 @@ input {
   box-shadow: 0 0 12px rgba(255, 77, 77, 0.6);
   letter-spacing: 0.5px;
 }
+
+/* ensure the form is interactive and above any background/overlay */
+.order-card, #orderForm {
+  position: relative;
+  z-index: 1;
+}
+
+/* confirmation starts hidden */
+#confirmation { display: none; }
+#confirmation.show { display: block; }
+
+/* if you previously used .hidden, keep it consistent */
+.hidden { display: none !important; }

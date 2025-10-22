@@ -1,32 +1,35 @@
-/* =========================================================
-   db.js — MySQL Connection Pool for Travel Experts (Workshop 2)
-   Author: Cantor (Matte Black ᗰტ) + VER1FEX
-   ========================================================= */
-require('dotenv').config();
-const mysql = require('mysql2');
+/*
+  ============================================
+  File: db.js
+  Project: Travel Experts – Workshop 2
+  Author: Cantor (Matte Black ᗰტ)
+  Partner: VΞR1FΞX
+  Date: 2025-10-22
+  Description:
+    MySQL connection pool (ES Module version)
+  ============================================
+*/
 
-// Create a MySQL connection pool
+import dotenv from "dotenv";
+import mysql from "mysql2/promise";
+
+dotenv.config();
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  connectionLimit: process.env.DB_CONNECTION_LIMIT || 10,
-  port: process.env.DB_PORT || 3306
+  port: process.env.DB_PORT || 3306,
+  connectionLimit: process.env.DB_CONNECTION_LIMIT || 10
 });
 
-// Convert callback-based pool → Promise-based
-const promisePool = pool.promise();
+try {
+  const conn = await pool.getConnection();
+  console.log(`✅ Connected to MySQL (port ${process.env.DB_PORT || 3306})`);
+  conn.release();
+} catch (err) {
+  console.error("❌ Database connection failed:", err.message);
+}
 
-// Test connection immediately when module loads
-promisePool.getConnection()
-  .then(conn => {
-    console.log('✅ Connected to MySQL database!');
-    conn.release();
-  })
-  .catch(err => {
-    console.error('❌ Database connection failed:', err.message);
-  });
-
-// Export the promise pool (so server.js can use .query)
-module.exports = promisePool;
+export default pool;

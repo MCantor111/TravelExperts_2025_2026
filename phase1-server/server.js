@@ -1,227 +1,205 @@
-/* =========================================================
-   server.js — Express API for Travel Experts (Workshop 2)
-   Author: Cantor (Matte Black ᗰტ) + VER1FEX
-   NOTE: Keeps Workshop 1 static files intact in /public.
-   ========================================================= */
-require('dotenv').config();
-const express = require('express');
-const pool = require('./db');
-const path = require('path');
+/*
+  ============================================
+  File: server.js
+  Project: Travel Experts – Workshop 2 
+  Author: Cantor (Matte Black ᗰტ)
+  Partners: ☣️ケイオバリア☣️, VΞR1FΞX
+  Date: 2025-10-22
+  ============================================
+*/
+
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import pool from "./db.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const PORT = process.env.PORT || 3000;
 
-/* ---------- Static site (Workshop 1 preserved) ---------- */
-app.use(express.static(path.join(__dirname, 'public')));
+// ---------- Middleware ----------
+app.use(cors());
+app.use(bodyParser.json());
 
-/* ---------- Utilities ---------- */
-const pick = (obj, keys) => Object.fromEntries(keys.map(k => [k, obj[k]]));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-/* ---------- GET /api/packages ---------- */
-/* Lists valid packages; flags ones already started (bold/red date on FE). */
-app.get('/api/packages', async (req, res) => {
-  try {
-    const [rows] = await pool.query(
-      `SELECT PackageId, PkgName, PkgStartDate, PkgEndDate, PkgDesc, 
-              PkgBasePrice, PkgAgencyCommission
-         FROM packages
-        WHERE PkgEndDate >= CURDATE()
-        ORDER BY PkgStartDate`
-    );
-    const today = new Date();
-    const data = rows.map(r => ({
-      ...r,
-      Started: new Date(r.PkgStartDate) < today
-    }));
-    res.json({ ok: true, data });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: 'DB_ERROR_PACKAGES' });
+// ---------- API: Register new customer ----------
+app.post("/api/register", async (req, res) => {
+  const {
+    CustFirstName,
+    CustLastName,
+    CustAddress,
+    CustCity,
+    CustProv,
+    CustPostal,
+    CustCountry,
+    CustHomePhone,
+    CustBusPhone,
+    CustEmail
+  } = req.body;
+
+  if (!CustFirstName || !CustLastName || !CustEmail) {
+    return res.status(400).json({ ok: false, message: "Missing required fields" });
   }
-});
 
-/* ---------- GET /api/agencies ---------- */
-/* Agencies with nested agents (for Contact page). */
-app.get('/api/agencies', async (req, res) => {
+  const sql = `
+    INSERT INTO customers
+      (CustFirstName, CustLastName, CustAddress, CustCity, CustProv,
+       CustPostal, CustCountry, CustHomePhone, CustBusPhone, CustEmail)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
   try {
-    const [rows] = await pool.query(
-      `SELECT a.AgencyId, a.AgncyAddress, a.AgncyCity, a.AgncyProv, a.AgncyPostal, 
-              a.AgncyCountry, a.AgncyPhone, a.AgncyFax,
-              g.AgentId, g.AgtFirstName, g.AgtLastName, g.AgtBusPhone, g.AgtEmail
-         FROM agencies a 
-         JOIN agents g ON a.AgencyId = g.AgencyId
-        ORDER BY a.AgencyId, g.AgtLastName`
-    );
-
-    const byAgency = new Map();
-    for (const r of rows) {
-      const key = r.AgencyId;
-      if (!byAgency.has(key)) {
-        byAgency.set(key, {
-          AgencyId: r.AgencyId,
-          AgncyAddress: r.AgncyAddress,
-          AgncyCity: r.AgncyCity,
-          AgncyProv: r.AgncyProv,
-          AgncyPostal: r.AgncyPostal,
-          AgncyCountry: r.AgncyCountry,
-          AgncyPhone: r.AgncyPhone,
-          AgncyFax: r.AgncyFax,
-          Agents: []
-        });
-      }
-      byAgency.get(key).Agents.push({
-        AgentId: r.AgentId,
-        AgtFirstName: r.AgtFirstName,
-        AgtLastName:  r.AgtLastName,
-        AgtBusPhone:  r.AgtBusPhone,
-        AgtEmail:     r.AgtEmail
-      });
-    }
-
-    res.json({ ok: true, data: Array.from(byAgency.values()) });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: 'DB_ERROR_AGENCIES' });
-  }
-});
-
-/* ---------- POST /api/orders ---------- */
-/* Creates Customer + Booking. 
-   Notes:
-   - bookings.BookingNo (varchar) required: generate short code.
-   - bookings.TripTypeId (varchar) may be required; we’ll use any existing ID 
-     from triptypes table, else fallback to 'L' and insert if missing.
-*/
-app.post('/api/orders', async (req, res) => {
-  const client = await pool.getConnection();
-  try {
-    const payload = pick(req.body, [
-      'CustFirstName','CustLastName','CustEmail','CustHomePhone',
-      'CustAddress','CustCity','CustProv','CustPostal','CustCountry',
-      'TravelerCount','PackageId'
+    const [result] = await pool.query(sql, [
+      CustFirstName,
+      CustLastName,
+      CustAddress,
+      CustCity,
+      CustProv,
+      CustPostal,
+      CustCountry,
+      CustHomePhone,
+      CustBusPhone,
+      CustEmail
     ]);
 
-    // Very basic validation
-    if (!payload.CustFirstName || !payload.CustLastName || !payload.CustEmail || !payload.PackageId) {
-      return res.status(400).json({ ok: false, error: 'BAD_REQUEST' });
+    console.log("✅ New customer added:", result.insertId);
+    res.json({ ok: true, message: "Registration successful!" });
+  } catch (err) {
+    console.error("DB insert error:", err);
+    res.status(500).json({ ok: false, message: "Database insert failed" });
+  }
+});
+
+// ---------- API: Get all travel packages ----------
+app.get("/api/packages", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM packages");
+    res.json({ ok: true, data: rows });
+  } catch (err) {
+    console.error("DB fetch error (packages):", err);
+    res.status(500).json({ ok: false, message: "Database fetch failed" });
+  }
+});
+
+// ---------- API: Get all agencies with their agents ----------
+app.get("/api/agencies", async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT 
+        a.AgencyId, a.AgncyAddress, a.AgncyCity, a.AgncyProv, a.AgncyPostal,
+        a.AgncyCountry, a.AgncyPhone, a.AgncyFax,
+        ag.AgentId, ag.AgtFirstName, ag.AgtLastName, ag.AgtBusPhone, ag.AgtEmail
+      FROM agencies a
+      LEFT JOIN agents ag ON a.AgencyId = ag.AgencyId
+      ORDER BY a.AgencyId;
+    `);
+
+    const agencies = {};
+    for (const row of rows) {
+      if (!agencies[row.AgencyId]) {
+        agencies[row.AgencyId] = {
+          AgencyId: row.AgencyId,
+          AgncyAddress: row.AgncyAddress,
+          AgncyCity: row.AgncyCity,
+          AgncyProv: row.AgncyProv,
+          AgncyPostal: row.AgncyPostal,
+          AgncyCountry: row.AgncyCountry,
+          AgncyPhone: row.AgncyPhone,
+          AgncyFax: row.AgncyFax,
+          Agents: []
+        };
+      }
+
+      if (row.AgentId) {
+        agencies[row.AgencyId].Agents.push({
+          AgtFirstName: row.AgtFirstName,
+          AgtLastName: row.AgtLastName,
+          AgtBusPhone: row.AgtBusPhone,
+          AgtEmail: row.AgtEmail
+        });
+      }
     }
 
-    await client.beginTransaction();
+    res.json({ ok: true, data: Object.values(agencies) });
+  } catch (err) {
+    console.error("DB fetch error (agencies):", err);
+    res.status(500).json({ ok: false, message: "Database fetch failed" });
+  }
+});
 
-    // 1) Create Customer (minimal fields)
-    const [custRes] = await client.query(
-      `INSERT INTO customers 
-       (CustFirstName, CustLastName, CustEmail, CustHomePhone, CustAddress,
-        CustCity, CustProv, CustPostal, CustCountry)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        payload.CustFirstName, payload.CustLastName, payload.CustEmail, payload.CustHomePhone || null,
-        payload.CustAddress || null, payload.CustCity || null, payload.CustProv || null,
-        payload.CustPostal || null, payload.CustCountry || null
-      ]
+// ---------- Serve static front-end *after* API routes ----------
+app.use(express.static(path.join(__dirname, "public")));
+
+// ---------- Default Route ----------
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// ---------- API: Create a booking ----------
+app.post("/api/bookings", async (req, res) => {
+  const { CustFirstName, CustLastName, CustEmail, PackageName, TravelerCount } = req.body;
+
+  try {
+    // 1️⃣ Find the customer
+    const [rows] = await pool.query(
+      `SELECT CustomerId FROM customers 
+       WHERE CustFirstName = ? AND CustLastName = ? AND CustEmail = ? 
+       LIMIT 1`,
+      [CustFirstName, CustLastName, CustEmail]
     );
-    const customerId = custRes.insertId;
 
-    // 2) Ensure TripTypeId
-    let tripTypeId = null;
-    const [tt] = await client.query(`SELECT TripTypeId FROM triptypes LIMIT 1`);
-    if (tt.length) {
-      tripTypeId = tt[0].TripTypeId;
-    } else {
-      // create a default leisure type 'L' if table is empty
-      await client.query(`INSERT INTO triptypes (TripTypeId, TTName) VALUES ('L','Leisure')`);
-      tripTypeId = 'L';
+    if (rows.length === 0) {
+      return res.status(404).json({ ok: false, message: "Customer not found. Please register first." });
     }
 
-    // 3) BookingNo: short random code
-    const bookingNo = Math.random().toString(36).slice(2, 8).toUpperCase();
+    const CustomerId = rows[0].CustomerId;
 
-    // 4) Create Booking
-    const travelerCount = Number(payload.TravelerCount || 1);
-    await client.query(
-      `INSERT INTO bookings
-       (BookingDate, BookingNo, TravelerCount, CustomerId, PackageId, TripTypeId)
+    // 2️⃣ Look up the package ID by name
+    const [pkgRows] = await pool.query(
+      "SELECT PackageId, PkgName FROM packages WHERE PkgName = ? LIMIT 1",
+      [PackageName]
+    );
+
+    if (pkgRows.length === 0) {
+      return res.status(404).json({ ok: false, message: "Package not found." });
+    }
+
+    const { PackageId, PkgName } = pkgRows[0];
+
+    // 3️⃣ Generate booking number and insert
+    const BookingNo = "BK" + Math.floor(Math.random() * 1000000);
+    const TripTypeId = "B"; // default
+
+    const [bookResult] = await pool.query(
+      `INSERT INTO bookings 
+         (BookingDate, BookingNo, TravelerCount, CustomerId, TripTypeId, PackageId)
        VALUES (NOW(), ?, ?, ?, ?, ?)`,
-      [bookingNo, travelerCount, customerId, payload.PackageId, tripTypeId]
+      [BookingNo, TravelerCount, CustomerId, TripTypeId, PackageId]
     );
 
-    await client.commit();
-    res.json({ ok: true, customerId, bookingNo });
+    // 4️⃣ Respond with confirmation data
+    res.json({
+      ok: true,
+      booking: {
+        BookingNo,
+        PkgName,
+        BookingDate: new Date().toISOString().slice(0, 19).replace("T", " "),
+        TravelerCount,
+        CustFirstName,
+        CustLastName,
+        CustEmail
+      }
+    });
   } catch (err) {
-    await client.rollback();
-    console.error(err);
-    res.status(500).json({ ok: false, error: 'DB_ERROR_ORDER' });
-  } finally {
-    client.release();
+    console.error("Booking error:", err);
+    res.status(500).json({ ok: false, message: "Database error during booking." });
   }
 });
 
-const port = parseInt(process.env.PORT || '3000', 10);
-app.listen(port, () => console.log(`Travel Experts API running on http://localhost:${port}`));
-
-// ========== Packages Page ==========
-document.addEventListener("DOMContentLoaded", async () => {
-  const pkgTable = document.querySelector("#packagesTable tbody");
-  if (!pkgTable) return;
-
-  try {
-    const res = await fetch("/api/packages");
-    const { ok, data } = await res.json();
-    if (!ok) throw new Error("Bad API response");
-
-    pkgTable.innerHTML = "";
-    for (const pkg of data) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${pkg.PkgName}</td>
-        <td>${pkg.PkgStartDate.slice(0, 10)}</td>
-        <td>${pkg.PkgEndDate.slice(0, 10)}</td>
-        <td>${pkg.PkgBasePrice.toFixed(2)}</td>
-        <td>${pkg.PkgAgencyCommission.toFixed(2)}</td>
-        <td>${pkg.PkgDesc}</td>
-      `;
-      if (pkg.Started) tr.style.color = "red";
-      pkgTable.appendChild(tr);
-    }
-  } catch (err) {
-    console.error("Failed to load packages:", err);
-    pkgTable.innerHTML = "<tr><td colspan='6'>Error loading packages.</td></tr>";
-  }
-});
-
-app.get("/api/agencies", async (req, res) => {
-  try {
-    const [agencies] = await db.query("SELECT * FROM agencies");
-    const [agents] = await db.query("SELECT * FROM agents");
-
-    // group agents under their agency
-    const grouped = agencies.map(a => ({
-      ...a,
-      agents: agents.filter(g => g.AgencyId === a.AgencyId)
-    }));
-
-    res.json({ ok: true, data: grouped });
-  } catch (err) {
-    console.error("Error fetching agencies:", err);
-    res.status(500).json({ ok: false, message: "Server error" });
-  }
-});
-
-app.get("/api/agencies", async (req, res) => {
-  try {
-    const [agencies] = await db.query("SELECT * FROM agencies");
-    const [agents] = await db.query("SELECT * FROM agents");
-
-    // group agents under their agency
-    const grouped = agencies.map(a => ({
-      ...a,
-      agents: agents.filter(g => g.AgencyId === a.AgencyId)
-    }));
-
-    res.json({ ok: true, data: grouped });
-  } catch (err) {
-    console.error("Error fetching agencies:", err);
-    res.status(500).json({ ok: false, message: "Server error" });
-  }
+// ---------- Start Server ----------
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

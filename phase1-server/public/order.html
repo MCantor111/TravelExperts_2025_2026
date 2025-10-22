@@ -1,36 +1,219 @@
+<!-- ============================================
+  File: order.html
+  Project: Travel Experts – Workshop 2
+  Author: Cantor (Matte Black ᗰტ)
+  Partners: ☣️ケイオバリア☣️, VΞR1FΞX
+  ============================================ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Travel Experts | Book Now</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Travel Experts | Order</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    main { max-width: 680px; margin: 3rem auto; padding: 2rem; }
+    form { display: flex; flex-direction: column; gap: 1rem; }
+    input { padding: .7rem; border: 1px solid var(--accent); border-radius: 8px; background: var(--bg); color: var(--text); }
+    button {
+      background: linear-gradient(90deg, #45a29e, #66fcf1);
+      color: #0b0c10; font-weight: 700; padding: .9rem 1.2rem;
+      border-radius: 10px; border: none; cursor: pointer;
+      box-shadow: 0 0 18px rgba(102,252,241,.25);
+    }
+    /* Toast */
+    .toast {
+      position: fixed; top: 20px; right: 20px; z-index: 9999;
+      padding: .8rem 1rem; border-radius: 8px; font-weight: 700;
+      border: 1px solid; backdrop-filter: blur(6px);
+      animation: fade .3s ease;
+    }
+    .toast.ok { color:#16d47b; background:rgba(22,212,123,.12); border-color:#16d47b; }
+    .toast.err{ color:#ff6b6b; background:rgba(255,107,107,.12); border-color:#ff6b6b; }
+    @keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Confirmation modal */
+    .modal {
+      position: fixed; inset: 0; display: none; place-items: center; z-index: 9998;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(2px);
+    }
+    .modal.show { display: grid; }
+    .card {
+      width: min(620px, 92vw);
+      background: rgba(69,162,158,.10);
+      border: 1px solid rgba(102,252,241,.30);
+      border-radius: 14px; padding: 1.5rem; color: #c5c6c7; text-align: left;
+      box-shadow: 0 0 24px rgba(102,252,241,.25); animation: pop .25s ease-out;
+    }
+    .card h2 { color: var(--highlight); margin: 0 0 .6rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem .9rem; }
+    .grid b { color: var(--highlight); }
+    .actions { margin-top: 1rem; display: flex; gap: .6rem; justify-content: flex-end; }
+    .actions a, .actions button {
+      background: #1f2833; color:#c5c6c7; border: 1px solid var(--accent);
+      padding: .55rem .9rem; border-radius: 8px; cursor: pointer;
+    }
+    @keyframes pop{from{transform:scale(.98);opacity:0}to{transform:scale(1);opacity:1}}
+  </style>
 </head>
+
 <body>
-  <main class="order-page">
-    <h1>Book Your Dream Vacation</h1>
-    <form id="orderForm">
-      <label for="package">Selected Package:</label>
-      <input type="text" id="package" name="package" readonly />
+  <header>
+    <h1>Travel Experts</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="register.html">Register</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
 
-      <label for="custName">Full Name:</label>
-      <input type="text" id="custName" required />
+  <main>
+    <h2>Book Your Adventure</h2>
 
-      <label for="custEmail">Email:</label>
-      <input type="email" id="custEmail" required />
+    <form id="orderForm" autocomplete="on" novalidate>
+      <label for="package">Package:</label>
+      <input id="package" name="PackageName" type="text" readonly />
 
-      <label for="travelers">Number of Travelers:</label>
-      <input type="number" id="travelers" min="1" required />
+      <input type="hidden" id="packageId" name="PackageId" />
 
-      <label for="startDate">Preferred Start Date:</label>
-      <input type="date" id="startDate" required />
+      <label for="first">First Name:</label>
+      <input id="first" name="CustFirstName" type="text" required />
+
+      <label for="last">Last Name:</label>
+      <input id="last" name="CustLastName" type="text" required />
+
+      <label for="email">Email:</label>
+      <input id="email" name="CustEmail" type="email" required />
+
+      <label for="count">Traveler Count:</label>
+      <input id="count" name="TravelerCount" type="number" min="1" value="1" required />
 
       <button type="submit">Confirm Booking</button>
     </form>
-
-    <div id="confirmation" class="hidden"></div>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Confirmation modal -->
+  <div id="confirmModal" class="modal" aria-hidden="true">
+    <div class="card" role="dialog" aria-modal="true">
+      <h2>✅ Booking Confirmed!</h2>
+      <div class="grid" id="confirmGrid"></div>
+      <div class="actions">
+        <a href="packages.html">Back to Packages</a>
+        <button id="closeModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Tiny helper to show toasts
+    function toast(msg, ok=true) {
+      const t = document.createElement("div");
+      t.className = "toast " + (ok ? "ok" : "err");
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => { t.style.opacity = "0"; setTimeout(() => t.remove(), 250); }, 2600);
+    }
+
+    // --- Resolve PackageId on load so server always gets a valid id ---
+    const form = document.getElementById("orderForm");
+    const pkgNameEl = document.getElementById("package");
+    const pkgIdEl   = document.getElementById("packageId");
+    const params = new URLSearchParams(location.search);
+    const pkgName = params.get("package") ? decodeURIComponent(params.get("package")) : "";
+
+    if (pkgName) pkgNameEl.value = pkgName;
+
+    (async function resolvePackageId() {
+      try {
+        const r = await fetch("http://localhost:3000/api/packages");
+        const { ok, data } = await r.json();
+        if (!ok) throw new Error("API said not-ok");
+        const match = data.find(p => p.PkgName === pkgName);
+        if (match) {
+          pkgIdEl.value = String(match.PackageId);
+        } else {
+          pkgIdEl.value = "";
+          toast("Package not found; cannot book.", false);
+          form.querySelector("button[type='submit']").disabled = true;
+        }
+      } catch (e) {
+        toast("Could not load packages to resolve ID.", false);
+      }
+    })();
+
+    // --- Submit handler (no reload, robust result handling) ---
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = Object.fromEntries(new FormData(form).entries());
+      payload.TravelerCount = Number(payload.TravelerCount || 1);
+
+      // quick client validation
+      const emailOK = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(payload.CustEmail || "");
+      if (!emailOK) { toast("Invalid email address.", false); return; }
+      if (!payload.PackageId) { toast("Missing package id.", false); return; }
+
+      try {
+        const res = await fetch("http://localhost:3000/api/bookings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        // Network OK; parse JSON safely
+        const data = await res.json().catch(() => ({}));
+
+        // If server returned an error shape
+        if (!res.ok || data.ok === false) {
+          toast(data.message || `Server error (HTTP ${res.status})`, false);
+          return;
+        }
+
+        // Happy path: prefer server's booking object; fall back to our payload
+        const b = data.booking || {
+          BookingNo: "—",
+          PkgName: pkgNameEl.value,
+          BookingDate: new Date().toISOString().slice(0,19).replace("T"," "),
+          TravelerCount: payload.TravelerCount,
+          CustFirstName: payload.CustFirstName,
+          CustLastName: payload.CustLastName,
+          CustEmail: payload.CustEmail
+        };
+
+        showConfirmation(b);
+      } catch (err) {
+        // Only true network failures land here
+        toast("Could not reach server.", false);
+      }
+    });
+
+    // --- Modal confirmation ---
+    const modal = document.getElementById("confirmModal");
+    const grid  = document.getElementById("confirmGrid");
+    const closeBtn = document.getElementById("closeModal");
+
+    function showConfirmation(b) {
+      grid.innerHTML = `
+        <b>Booking #</b><span>${b.BookingNo ?? "—"}</span>
+        <b>Package</b><span>${b.PkgName ?? pkgNameEl.value}</span>
+        <b>Name</b><span>${(b.CustFirstName||"")} ${(b.CustLastName||"")}</span>
+        <b>Email</b><span>${b.CustEmail || "—"}</span>
+        <b>Traveler Count</b><span>${b.TravelerCount ?? "—"}</span>
+        <b>Date</b><span>${b.BookingDate ?? new Date().toLocaleString()}</span>
+      `;
+      modal.classList.add("show");
+      toast("Booking confirmed!", true);
+    }
+
+    closeBtn.addEventListener("click", () => modal.classList.remove("show"));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("show");
+    });
+  </script>
 </body>
 </html>
