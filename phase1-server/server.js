@@ -1,7 +1,7 @@
 /*
   ============================================
   File: server.js
-  Project: Travel Experts – Workshop 2
+  Project: Travel Experts – Workshop 2 
   Author: Cantor (Matte Black ᗰტ)
   Partners: ☣️ケイオバリア☣️, VΞR1FΞX
   Date: 2025-10-22
@@ -136,6 +136,68 @@ app.use(express.static(path.join(__dirname, "public")));
 // ---------- Default Route ----------
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// ---------- API: Create a booking ----------
+app.post("/api/bookings", async (req, res) => {
+  const { CustFirstName, CustLastName, CustEmail, PackageId, TravelerCount } = req.body;
+
+  try {
+    // 1️⃣ Find the existing registered customer
+    const [rows] = await pool.query(
+      `SELECT CustomerId, CustFirstName, CustLastName, CustEmail
+       FROM customers 
+       WHERE CustFirstName = ? AND CustLastName = ? AND CustEmail = ? 
+       LIMIT 1`,
+      [CustFirstName, CustLastName, CustEmail]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ ok: false, message: "Customer not found. Please register first." });
+    }
+
+    const CustomerId = rows[0].CustomerId;
+
+    // 2️⃣ Create a booking number and trip type
+    const BookingNo = "BK" + Math.floor(Math.random() * 1000000);
+    let TripTypeId = "B";
+    try {
+      const [tripRows] = await pool.query("SELECT TripTypeId FROM triptypes LIMIT 1");
+      if (tripRows.length > 0) TripTypeId = tripRows[0].TripTypeId;
+    } catch { /* ignore */ }
+
+    // 3️⃣ Insert booking
+    const [bookResult] = await pool.query(
+      `INSERT INTO bookings 
+         (BookingDate, BookingNo, TravelerCount, CustomerId, TripTypeId, PackageId)
+       VALUES (NOW(), ?, ?, ?, ?, ?)`,
+      [BookingNo, TravelerCount, CustomerId, TripTypeId, PackageId]
+    );
+
+    // 4️⃣ Fetch package name for confirmation card
+    const [pkgRows] = await pool.query(
+      "SELECT PkgName FROM packages WHERE PackageId = ? LIMIT 1",
+      [PackageId]
+    );
+    const PkgName = pkgRows.length > 0 ? pkgRows[0].PkgName : "Unknown Package";
+
+    // 5️⃣ Respond with details for UI
+    res.json({
+      ok: true,
+      booking: {
+        BookingNo,
+        PkgName,
+        BookingDate: new Date().toISOString().slice(0, 19).replace("T", " "),
+        TravelerCount,
+        CustFirstName,
+        CustLastName,
+        CustEmail
+      }
+    });
+  } catch (err) {
+    console.error("Booking error:", err);
+    res.status(500).json({ ok: false, message: "Database error during booking." });
+  }
 });
 
 // ---------- Start Server ----------

@@ -1,36 +1,153 @@
+<!-- ============================================
+  File: order.html
+  Project: Travel Experts – Workshop 2
+  Author: Cantor (Matte Black ᗰტ)
+  Partners: ☣️ケイオバリア☣️, VΞR1FΞX
+  Date: 2025-10-22
+  ============================================ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Travel Experts | Book Now</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Travel Experts | Order</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    main { max-width: 640px; margin: 3rem auto; padding: 2rem; }
+    form { display: flex; flex-direction: column; gap: 1rem; }
+    input { padding: .7rem; border: 1px solid var(--accent); border-radius: 8px; background: var(--bg); color: var(--text); }
+    button {
+      background: linear-gradient(90deg, #45a29e, #66fcf1);
+      color: #0b0c10; font-weight: 700; padding: .9rem 1.2rem;
+      border-radius: 10px; border: none; cursor: pointer;
+      box-shadow: 0 0 18px rgba(102,252,241,.25);
+    }
+    .confirmation-card {
+      background: rgba(69,162,158,.10);
+      border: 1px solid rgba(102,252,241,.30);
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: #c5c6c7;
+      text-align: center;
+      box-shadow: 0 0 24px rgba(102,252,241,.25);
+      animation: fadeInUp .6s ease-out;
+    }
+    .confirmation-card h2 { color: var(--highlight); margin-bottom: .6rem; }
+    .muted { opacity: .85; font-size: .95rem; }
+    @keyframes fadeInUp { from { opacity:0; transform: translateY(12px) } to { opacity:1; transform: translateY(0) } }
+  </style>
 </head>
+
 <body>
-  <main class="order-page">
-    <h1>Book Your Dream Vacation</h1>
-    <form id="orderForm">
-      <label for="package">Selected Package:</label>
-      <input type="text" id="package" name="package" readonly />
+  <header>
+    <h1>Travel Experts</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="register.html">Register</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
 
-      <label for="custName">Full Name:</label>
-      <input type="text" id="custName" required />
+  <main>
+    <h2>Book Your Adventure</h2>
 
-      <label for="custEmail">Email:</label>
-      <input type="email" id="custEmail" required />
+    <form id="orderForm" autocomplete="on" novalidate>
+      <label for="package">Package:</label>
+      <input id="package" name="PackageName" type="text" readonly />
 
-      <label for="travelers">Number of Travelers:</label>
-      <input type="number" id="travelers" min="1" required />
+      <label for="first">First Name:</label>
+      <input id="first" name="CustFirstName" type="text" required />
 
-      <label for="startDate">Preferred Start Date:</label>
-      <input type="date" id="startDate" required />
+      <label for="last">Last Name:</label>
+      <input id="last" name="CustLastName" type="text" required />
+
+      <label for="email">Email:</label>
+      <input id="email" name="CustEmail" type="email" required />
+
+      <label for="count">Traveler Count:</label>
+      <input id="count" name="TravelerCount" type="number" min="1" value="1" required />
 
       <button type="submit">Confirm Booking</button>
     </form>
 
-    <div id="confirmation" class="hidden"></div>
+    <div id="confirmation" style="margin-top:2rem;"></div>
   </main>
 
-  <script src="script.js"></script>
+  <footer>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
+  </footer>
+
+  <!-- Inline, page-scoped logic to avoid cross-page interference -->
+  <script>
+  (function () {
+    const form = document.getElementById("orderForm");
+    const pkgField = document.getElementById("package");
+    const confirmBox = document.getElementById("confirmation");
+
+    // Prefill package from ?package=...
+    const params = new URLSearchParams(window.location.search);
+    const pkg = params.get("package");
+    if (pkg) pkgField.value = decodeURIComponent(pkg);
+
+    // Simple front-end validation (email + count)
+    function validEmail(e) {
+      return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(e);
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (!validEmail(data.CustEmail)) {
+        alert("Please enter a valid email (e.g. user@example.com).");
+        return;
+      }
+      if (!data.TravelerCount || Number(data.TravelerCount) < 1) {
+        alert("Traveler count must be at least 1.");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/bookings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (!result.ok) {
+          alert("⚠️ " + (result.message || "Booking failed."));
+          return;
+        }
+
+        // Fade out the form, then show confirmation
+        form.style.transition = "opacity .35s ease";
+        form.style.opacity = "0";
+        setTimeout(() => {
+          form.style.display = "none";
+          const b = result.booking;
+          confirmBox.innerHTML = `
+            <div class="confirmation-card">
+              <h2>✅ Booking Confirmed!</h2>
+              <p class="muted">Thank you — your trip is locked in.</p>
+              <p><strong>Booking #:</strong> ${b.BookingNo}</p>
+              <p><strong>Package:</strong> ${b.PkgName}</p>
+              <p><strong>Name:</strong> ${b.CustFirstName} ${b.CustLastName}</p>
+              <p><strong>Email:</strong> ${b.CustEmail}</p>
+              <p><strong>Traveler Count:</strong> ${b.TravelerCount}</p>
+              <p><strong>Date:</strong> ${b.BookingDate}</p>
+              <p class="muted">You’ll also get a confirmation by email.</p>
+            </div>`;
+        }, 360);
+
+      } catch (err) {
+        alert("❌ Could not reach server: " + err.message);
+      }
+    });
+  })();
+  </script>
 </body>
 </html>

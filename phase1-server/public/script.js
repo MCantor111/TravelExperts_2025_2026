@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupHoverDebug();
   setupAutoFormatting();
   setupRegistrationForm();
-  setupOrderForm();
   loadPackages();
   loadAgencies();
 });
@@ -275,7 +274,8 @@ async function loadPackages() {
   };
 
   try {
-    const res = await fetch("/api/packages");
+    // use absolute URL to ensure it always hits the Node API
+    const res = await fetch("http://localhost:3000/api/packages");
     const { ok, data } = await res.json();
     if (!ok) throw new Error("Bad API response");
 
@@ -285,7 +285,6 @@ async function loadPackages() {
     data.forEach(pkg => {
       const started = new Date(pkg.PkgStartDate) < now;
       const imgSrc = imgMap[pkg.PkgName] || "";
-
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
@@ -354,32 +353,80 @@ document.addEventListener("DOMContentLoaded", loadAgencies);
 
 
 // =========================
-// ORDER FORM LOGIC
+// ORDER FORM LOGIC (Visual Confirmation)
 // =========================
-function setupOrderForm() {
-  const form = document.getElementById("orderForm");
-  if (!form) return;
-
+document.addEventListener("DOMContentLoaded", () => {
+  const orderForm = document.getElementById("orderForm");
   const pkgField = document.getElementById("package");
   const confirmation = document.getElementById("confirmation");
 
+  // Fill package from URL parameter
   const params = new URLSearchParams(window.location.search);
-  const pkgName = params.get("package");
-  if (pkgField && pkgName) pkgField.value = pkgName;
+  const selectedPackage = params.get("package");
+  if (pkgField && selectedPackage) pkgField.value = decodeURIComponent(selectedPackage);
 
-  form.addEventListener("submit", e => {
+  if (!orderForm || !confirmation) return;
+
+  orderForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const name = document.getElementById("custName").value.trim();
-    const email = document.getElementById("custEmail").value.trim();
-    const pkg = pkgField.value;
+    const formData = Object.fromEntries(new FormData(orderForm).entries());
 
-    confirmation.innerHTML = `
-      <h2>✅ Booking Confirmed!</h2>
-      <p>Thank you, <strong>${name}</strong>!</p>
-      <p>Your booking for <strong>${pkg}</strong> has been received.</p>
-      <p>A confirmation email will be sent to <strong>${email}</strong>.</p>
-    `;
-    confirmation.classList.remove("hidden");
-    form.reset();
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await res.json();
+      if (!result.ok) {
+        alert(`⚠️ ${result.message || "Booking failed."}`);
+        return;
+      }
+
+      const b = result.booking;
+
+      // Fade out the form, fade in confirmation
+      orderForm.style.transition = "opacity 0.4s ease";
+      orderForm.style.opacity = "0";
+
+      setTimeout(() => {
+        orderForm.style.display = "none";
+        confirmation.innerHTML = `
+          <div class="confirmation-card">
+            <h2>✅ Booking Confirmed!</h2>
+            <p><strong>Booking #:</strong> ${b.BookingNo}</p>
+            <p><strong>Package:</strong> ${b.PkgName}</p>
+            <p><strong>Name:</strong> ${b.CustFirstName} ${b.CustLastName}</p>
+            <p><strong>Email:</strong> ${b.CustEmail}</p>
+            <p><strong>Traveler Count:</strong> ${b.TravelerCount}</p>
+            <p><strong>Date:</strong> ${b.BookingDate}</p>
+          </div>
+        `;
+
+        const card = document.querySelector(".confirmation-card");
+        Object.assign(card.style, {
+          background: "rgba(69,162,158,0.1)",
+          border: "1px solid rgba(102,252,241,0.3)",
+          padding: "1.5rem",
+          borderRadius: "10px",
+          textAlign: "center",
+          color: "#C5C6C7",
+          boxShadow: "0 0 20px rgba(102,252,241,0.25)",
+          animation: "fadeInUp 0.8s ease-out",
+        });
+      }, 400);
+    } catch (err) {
+      alert("❌ Could not complete booking: " + err.message);
+    }
   });
-}
+});
+
+// Add animation keyframes dynamically (ensures visual movement)
+const style = document.createElement("style");
+style.textContent = `
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}`;
+document.head.appendChild(style);
