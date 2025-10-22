@@ -3,40 +3,26 @@
   File: contact.html
   Project: Travel Experts – Workshop 1
   Author: Cantor (Matte Black ᗰტ)
-  Partner: Metacoda (☣️ケイオバリア☣️)
-  Date: 2025-10-18
+  Partner: Metacoda (☣️ケイオバリア☣️, VΞR1FΞX)
+  Date: 2025-10-20
   Description:
-    Contact page for Travel Experts.
-    Allows users to submit inquiries via a validated form,
-    and displays company headquarters information.
-    Includes consistent styling and hero section for branding.
+    Enhanced Contact page with validated form,
+    company HQ details, and dynamic agency/agent listings.
   ============================================
 -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- 
-    Meta & Document Configuration
-    - UTF-8 ensures global character compatibility.
-    - Responsive design supported through viewport meta tag.
-  -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Travel Experts | Contact</title>
 
-  <!-- Linked global stylesheet and JavaScript -->
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
 
-  <!-- 
-    Inline Style Block
-    - Provides page-specific styling adjustments for the contact form
-      and company info sections without modifying global CSS.
-  -->
   <style>
-    /* === CONTACT FORM FIXES === */
+    /* === CONTACT PAGE LOCAL FIXES === */
     #contact {
       text-align: center;
       padding: 2rem 1rem;
@@ -53,12 +39,12 @@
       background: var(--surface);
       border-radius: 12px;
       box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+      animation: fadeZoom 1.2s ease-out;
     }
 
     #contactForm label {
       font-weight: bold;
       color: var(--highlight);
-      margin-bottom: 0.3rem;
     }
 
     #contactForm input,
@@ -69,50 +55,115 @@
       border-radius: 6px;
       padding: 0.6rem;
       width: 100%;
-      box-sizing: border-box;
     }
 
     #contactForm button {
       align-self: center;
-      background: var(--accent);
+      background: linear-gradient(90deg, #45a29e 0%, #66fcf1 100%);
       color: var(--bg);
       font-weight: bold;
       padding: 0.7rem 1.5rem;
       border-radius: 6px;
       border: none;
       cursor: pointer;
+      box-shadow: 0 0 15px rgba(102, 252, 241, 0.3);
       transition: background 0.3s ease, transform 0.2s ease;
     }
 
     #contactForm button:hover {
-      background: var(--highlight);
+      background: linear-gradient(90deg, #66fcf1 0%, #45a29e 100%);
       transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(102, 252, 241, 0.6);
     }
 
-    /* === COMPANY INFO === */
+    /* === HQ INFO === */
     #company-info {
       background: var(--surface);
       border-radius: 12px;
       padding: 2rem;
       margin-top: 3rem;
       box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+      animation: fadeZoom 1.8s ease-out;
     }
 
     #company-info h3 {
       color: var(--highlight);
       margin-bottom: 1rem;
+      text-shadow: 0 0 8px rgba(102, 252, 241, 0.4);
     }
 
     #company-info p {
       margin: 0.3rem 0;
       color: var(--text);
     }
+
+    /* === AGENCIES GRID (dynamic from /api/agencies) === */
+    .agency-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin: 3rem auto;
+      max-width: 1000px;
+    }
+
+    .agency-card {
+      background: linear-gradient(180deg, #111418 0%, #0b0c10 100%);
+      border: 1px solid rgba(102, 252, 241, 0.15);
+      border-radius: 14px;
+      color: var(--text);
+      padding: 1.5rem;
+      width: 280px;
+      box-shadow: 0 0 20px rgba(102, 252, 241, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.4s ease;
+      animation: auroraPulse 12s ease-in-out infinite;
+    }
+
+    .agency-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 25px rgba(102, 252, 241, 0.25);
+    }
+
+    .agency-card h3 {
+      color: var(--highlight);
+      text-shadow: 0 0 8px rgba(102, 252, 241, 0.4);
+      margin-bottom: 0.6rem;
+    }
+
+    .agency-address,
+    .agency-phone,
+    .agency-fax {
+      font-size: 0.9rem;
+      margin: 0.3rem 0;
+    }
+
+    .agent-list {
+      margin-top: 1rem;
+      border-top: 1px solid rgba(102, 252, 241, 0.15);
+      padding-top: 0.8rem;
+    }
+
+    .agent-card {
+      margin-bottom: 0.8rem;
+      background: rgba(69, 162, 158, 0.1);
+      border-radius: 8px;
+      padding: 0.5rem;
+      box-shadow: 0 0 5px rgba(102, 252, 241, 0.2);
+    }
+
+    .agent-card a {
+      color: var(--highlight);
+      text-decoration: none;
+    }
+
+    .agent-card a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 
 <body>
   <!-- ================= HEADER ================= -->
-  <!-- Consistent navigation bar across all pages -->
   <header>
     <h1>Travel Experts</h1>
     <nav>
@@ -123,10 +174,9 @@
     </nav>
   </header>
 
-  <!-- ================= MAIN CONTENT ================= -->
+  <!-- ================= MAIN ================= -->
   <main>
     <!-- === HERO SECTION === -->
-    <!-- Displays thematic image and title for page identity -->
     <section id="hero">
       <h2>Get in Touch</h2>
       <img 
@@ -135,45 +185,25 @@
       />
     </section>
 
-    <!-- === CONTACT FORM SECTION === -->
-    <!-- Users can send inquiries or feedback -->
+    <!-- === CONTACT FORM === -->
     <section id="contact">
       <h2>We’d Love to Hear From You</h2>
       <p>Have a question about our trips, or just want to say hello? Drop us a line below!</p>
 
       <form id="contactForm" onsubmit="return sendMessage()">
         <label for="name">Name:</label>
-        <input 
-          type="text" 
-          id="name" 
-          name="name" 
-          placeholder="Enter your name" 
-          required 
-        />
+        <input type="text" id="name" name="name" placeholder="Enter your name" required />
 
         <label for="email">Email:</label>
-        <input 
-          type="email" 
-          id="email" 
-          name="email" 
-          placeholder="Enter your email" 
-          required 
-        />
+        <input type="email" id="email" name="email" placeholder="Enter your email" required />
 
         <label for="message">Message:</label>
-        <textarea 
-          id="message" 
-          name="message" 
-          rows="5" 
-          placeholder="Type your message here..." 
-          required
-        ></textarea>
+        <textarea id="message" name="message" rows="5" placeholder="Type your message here..." required></textarea>
 
         <button type="submit">Send Message</button>
       </form>
 
-      <!-- === COMPANY INFORMATION SECTION === -->
-      <!-- Static content listing corporate contact details -->
+      <!-- === COMPANY INFORMATION === -->
       <div id="company-info">
         <h3>Our Headquarters</h3>
         <p><strong>Address:</strong> 123 Aurora Blvd, Calgary, AB, Canada</p>
@@ -181,6 +211,14 @@
         <p><strong>Email:</strong> contact@travelexperts.ca</p>
         <p><strong>Hours:</strong> Mon–Fri: 9:00AM–6:00PM MDT</p>
       </div>
+
+      <!-- === AGENCIES & AGENTS (dynamic) === -->
+      <section id="agencies-section">
+        <h2>Our Local Agencies & Agents</h2>
+        <div id="agencies-container" class="agency-grid">
+          <p>Loading agencies...</p>
+        </div>
+      </section>
     </section>
   </main>
 
@@ -189,20 +227,17 @@
     <p>© 2025 Travel Experts Inc. All rights reserved.</p>
   </footer>
 
-  <!-- ================= INLINE VALIDATION SCRIPT ================= -->
-  <!-- Validates user input and displays confirmation -->
+  <!-- Inline validation (backup only; main logic lives in script.js) -->
   <script>
     function sendMessage() {
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
       const message = document.getElementById('message').value.trim();
-
       if (!name || !email || !message) {
         alert('Please fill out all fields before sending!');
         return false;
       }
-
-      alert(`Thank you, ${name}! Your message has been sent. We'll get back to you soon.`);
+      alert(\`Thank you, \${name}! Your message has been sent. We'll get back to you soon.\`);
       return true;
     }
   </script>

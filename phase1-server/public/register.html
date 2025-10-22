@@ -1,0 +1,99 @@
+<!-- 
+  ============================================
+  File: register.html
+  Project: Travel Experts – Workshop 1
+  Authors:
+    Cantor (Matte Black ᗰტ)
+    Partners: Metacoda (☣️ケイオバリア☣️, VΞR1FΞX)
+  Date: 2025-10-21
+  Description:
+    Registration page matching the actual TravelExperts
+    customer schema in MySQL (Workshop 2 edition).
+  ============================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Registration | Travel Experts</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>Travel Experts</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="register.html" class="active">Register</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero">
+    <h2>Customer Registration</h2>
+  </section>
+
+  <!-- INTRO -->
+  <section id="registration-intro" style="text-align: center; padding: 1rem;">
+    <p>Join Travel Experts and let us plan your next adventure.</p>
+  </section>
+
+  <!-- REGISTRATION FORM -->
+  <section id="registration">
+    <form id="registrationForm" action="bouncer.php" method="post" novalidate>
+      <div class="form-grid">
+
+        <!-- === Personal Information === -->
+        <label for="custFirstName">First Name:</label>
+        <input type="text" id="custFirstName" name="custFirstName" maxlength="25" required />
+
+        <label for="custLastName">Last Name:</label>
+        <input type="text" id="custLastName" name="custLastName" maxlength="25" required />
+
+        <label for="custAddress">Address:</label>
+        <input type="text" id="custAddress" name="custAddress" maxlength="75" required />
+
+        <label for="custCity">City:</label>
+        <input type="text" id="custCity" name="custCity" maxlength="50" required />
+
+        <label for="custProv">Province (2-letter code):</label>
+        <input type="text" id="custProv" name="custProv" maxlength="2" placeholder="e.g. AB" required />
+
+        <label for="custPostal">Postal Code:</label>
+        <input type="text" id="custPostal" name="custPostal" maxlength="7" placeholder="T2N 1N4" required />
+
+        <label for="custCountry">Country:</label>
+        <input type="text" id="custCountry" name="custCountry" maxlength="25" placeholder="Canada" />
+
+        <label for="custHomePhone">Home Phone:</label>
+        <input type="tel" id="custHomePhone" name="custHomePhone" maxlength="20" placeholder="Optional" />
+
+        <label for="custBusPhone">Business Phone:</label>
+        <input type="tel" id="custBusPhone" name="custBusPhone" maxlength="20" required />
+
+        <label for="custEmail">Email:</label>
+        <input type="email" id="custEmail" name="custEmail" maxlength="50" required />
+
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="form-actions">
+        <button type="submit">Register</button>
+        <button type="reset">Clear</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
+  </footer>
+</body>
+</html>

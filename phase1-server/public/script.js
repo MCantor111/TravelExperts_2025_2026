@@ -277,10 +277,19 @@ if (submitBtn) {
 }
 
 
-// ========== Dynamic Package Loader ==========
+// ========== Dynamic Package Loader (without default image) ==========
 document.addEventListener("DOMContentLoaded", async () => {
   const container = document.querySelector("#packages-container");
   if (!container) return;
+
+  // Image mapping for known packages
+  const imgMap = {
+    "European Vacation": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34",
+    "Polynesian Paradise": "https://images.unsplash.com/photo-1493558103817-58b2924bce98",
+    "Caribbean New Year": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+    "Asian Expedition": "https://images.unsplash.com/photo-1549693578-d683be217e58",
+    "Arctic Aurora Quest": "https://images.unsplash.com/photo-1519681393784-d120267933ba"
+  };
 
   try {
     const res = await fetch("/api/packages");
@@ -292,37 +301,122 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     data.forEach(pkg => {
       const started = new Date(pkg.PkgStartDate) < now;
+      const imgSrc = imgMap[pkg.PkgName] || ""; // no fallback now
+
       const card = document.createElement("div");
       card.className = "card";
 
-      // Assign images per package
-      const imgMap = {
-        "European Vacation": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34", // Eiffel Tower at dusk
-        "Polynesian Paradise": "https://images.unsplash.com/photo-1493558103817-58b2924bce98", // Hawaiian beach sunrise
-        "Caribbean New Year": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e", // Turquoise Caribbean sea
-        "Asian Expedition": "https://images.unsplash.com/photo-1549693578-d683be217e58" // Tokyo Shibuya lights
-      };
-
-      const imgSrc = imgMap[pkg.PkgName] || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e";
-
-      // Build card layout
       card.innerHTML = `
-        <img src="${imgSrc}" alt="${pkg.PkgName}" />
+        ${imgSrc ? `<img src="${imgSrc}" alt="${pkg.PkgName}">` : ""}
         <h3>${pkg.PkgName}</h3>
-        <p>${pkg.PkgDesc}</p>
-        <p class="${started ? "started" : ""}">
-          <strong>Start:</strong> ${pkg.PkgStartDate.slice(0,10)}
-        </p>
+        <p>${pkg.PkgDesc || "Explore this exclusive travel experience."}</p>
+        ${started ? `<p class="started">STARTED</p>` : ""}
+        <p><strong>Start:</strong> ${pkg.PkgStartDate.slice(0,10)}</p>
         <p><strong>End:</strong> ${pkg.PkgEndDate.slice(0,10)}</p>
         <p><strong>Price:</strong> $${Number(pkg.PkgBasePrice).toFixed(2)}</p>
-        <button class="order-btn">Order Now</button>
+        <button class="order-btn" onclick="window.location.href='order.html?package=${encodeURIComponent(pkg.PkgName)}'">
+          Order Now
+        </button>
       `;
       container.appendChild(card);
     });
-
   } catch (err) {
-    console.error(err);
+    console.error("Error loading packages:", err);
     container.innerHTML =
       "<p class='error'>Error loading packages. Please try again later.</p>";
+  }
+});
+
+// ========== Dynamic Agencies & Agents Loader ==========
+// === Dynamic Agency & Agent Loader ===
+document.addEventListener("DOMContentLoaded", async () => {
+  const container = document.querySelector("#agencies-container");
+  if (!container) {
+    console.log("No agencies container found");
+    return;
+  }
+  console.log("Agency loader initialized");
+
+    const faceMap = {
+      "Janet Delton": "https://cdn.generated.photos/user/02e1b38020a311eb8a900242ac110002_512_512.jpg",
+      "Judy Lisle": "https://cdn.generated.photos/user/0b90b82020a311eb8a900242ac110002_512_512.jpg",
+      "Dennis C. Reynolds": "https://cdn.generated.photos/user/1110b86020a311eb8a900242ac110002_512_512.jpg",
+      "John Coville": "https://cdn.generated.photos/user/1909d2a020a311eb8a900242ac110002_512_512.jpg",
+      "Janice W. Dahl": "https://cdn.generated.photos/user/24a3a92020a311eb8a900242ac110002_512_512.jpg",
+      "Bruce Dixon": "https://cdn.generated.photos/user/3c2c3b2020a311eb8a900242ac110002_512_512.jpg",
+      "Beverly Jones": "https://cdn.generated.photos/user/4b17f44020a311eb8a900242ac110002_512_512.jpg",
+      "Jane Merrill": "https://cdn.generated.photos/user/5b07c4a020a311eb8a900242ac110002_512_512.jpg",
+      "Brian Peterson": "https://cdn.generated.photos/user/6f8b2f1020a311eb8a900242ac110002_512_512.jpg"
+    };
+
+
+  try {
+    const res = await fetch("/api/agencies");
+    const { ok, data } = await res.json();
+    if (!ok) throw new Error("Bad API response");
+
+    container.innerHTML = "";
+
+    data.forEach(agency => {
+      const agencyCard = document.createElement("div");
+      agencyCard.className = "agency-card";
+
+      const agentsHTML = agency.Agents.map(agent => {
+      const fullName = `${agent.AgtFirstName} ${agent.AgtLastName}`.trim();
+      return `
+        <div class="agent-card">
+          <p><strong>${fullName}</strong></p>
+          <p>📞 ${agent.AgtBusPhone}</p>
+          <p>✉️ <a href="mailto:${agent.AgtEmail}">${agent.AgtEmail}</a></p>
+        </div>
+      `;
+    }).join("");
+
+      agencyCard.innerHTML = `
+        <h3>${agency.AgncyCity} Office</h3>
+        <p class="agency-address">${agency.AgncyAddress}, ${agency.AgncyCity}, ${agency.AgncyProv}</p>
+        <p class="agency-phone">📞 ${agency.AgncyPhone}</p>
+        <p class="agency-fax">📠 ${agency.AgncyFax}</p>
+        <div class="agent-list">${agentsHTML}</div>
+      `;
+
+      container.appendChild(agencyCard);
+    });
+  } catch (err) {
+    console.error("Error loading agencies:", err);
+    container.innerHTML =
+      "<p class='error'>Unable to load agency information.</p>";
+  }
+});
+
+// =========================
+// ORDER FORM LOGIC
+// =========================
+document.addEventListener("DOMContentLoaded", () => {
+  const orderForm = document.getElementById("orderForm");
+  const pkgField = document.getElementById("package");
+  const confirmation = document.getElementById("confirmation");
+
+  // If a ?package= parameter exists in the URL, show it in the field
+  const params = new URLSearchParams(window.location.search);
+  const selectedPackage = params.get("package");
+  if (pkgField && selectedPackage) pkgField.value = selectedPackage;
+
+  if (orderForm) {
+    orderForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("custName").value.trim();
+      const email = document.getElementById("custEmail").value.trim();
+      const pkg = pkgField.value;
+
+      confirmation.innerHTML = `
+        <h2>✅ Booking Confirmed!</h2>
+        <p>Thank you, <strong>${name}</strong>!</p>
+        <p>Your booking for <strong>${pkg}</strong> has been received.</p>
+        <p>A confirmation email will be sent to <strong>${email}</strong>.</p>
+      `;
+      confirmation.classList.remove("hidden");
+      orderForm.reset();
+    });
   }
 });
