@@ -154,6 +154,50 @@ footer {
   transition: text-shadow 1s ease;
 }
 
+.hero-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+button.primary-btn,
+button.secondary-btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  box-shadow: 0 0 12px rgba(102, 252, 241, 0.2);
+}
+
+/* Gradient main button */
+button.primary-btn {
+  background: linear-gradient(90deg, #45a29e, #66fcf1);
+  color: #0b0c10;
+}
+
+button.primary-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(102, 252, 241, 0.4);
+}
+
+/* Secondary outlined button */
+button.secondary-btn {
+  background: transparent;
+  border: 2px solid #66fcf1;
+  color: #66fcf1;
+}
+
+button.secondary-btn:hover {
+  background: rgba(102, 252, 241, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(102, 252, 241, 0.3);
+}
+
+
 /* === BUTTON PULSE AESTHETIC === */
 @keyframes auroraPulse {
   0%, 100% {
