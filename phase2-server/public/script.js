@@ -310,10 +310,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         ${imgSrc ? `<img src="${imgSrc}" alt="${pkg.PkgName}">` : ""}
         <h3>${pkg.PkgName}</h3>
         <p>${pkg.PkgDesc || "Explore this exclusive travel experience."}</p>
-        <p class="${started ? "started" : ""}">Start: ${pkg.PkgStartDate.slice(0,10)}</p>
-        <p>End: ${pkg.PkgEndDate.slice(0,10)}</p>
+        ${started ? `<p class="started">STARTED</p>` : ""}
+        <p><strong>Start:</strong> ${pkg.PkgStartDate.slice(0,10)}</p>
+        <p><strong>End:</strong> ${pkg.PkgEndDate.slice(0,10)}</p>
         <p><strong>Price:</strong> $${Number(pkg.PkgBasePrice).toFixed(2)}</p>
-        <button class="order-btn" onclick="alert('Booking ${pkg.PkgName}!')">
+        <button class="order-btn" onclick="window.location.href='order.html?package=${encodeURIComponent(pkg.PkgName)}'">
           Order Now
         </button>
       `;
@@ -385,5 +386,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Error loading agencies:", err);
     container.innerHTML =
       "<p class='error'>Unable to load agency information.</p>";
+  }
+});
+
+// =========================
+// ORDER FORM LOGIC
+// =========================
+document.addEventListener("DOMContentLoaded", () => {
+  const orderForm = document.getElementById("orderForm");
+  const pkgField = document.getElementById("package");
+  const confirmation = document.getElementById("confirmation");
+
+  // If a ?package= parameter exists in the URL, show it in the field
+  const params = new URLSearchParams(window.location.search);
+  const selectedPackage = params.get("package");
+  if (pkgField && selectedPackage) pkgField.value = selectedPackage;
+
+  if (orderForm) {
+    orderForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("custName").value.trim();
+      const email = document.getElementById("custEmail").value.trim();
+      const pkg = pkgField.value;
+
+      confirmation.innerHTML = `
+        <h2>✅ Booking Confirmed!</h2>
+        <p>Thank you, <strong>${name}</strong>!</p>
+        <p>Your booking for <strong>${pkg}</strong> has been received.</p>
+        <p>A confirmation email will be sent to <strong>${email}</strong>.</p>
+      `;
+      confirmation.classList.remove("hidden");
+      orderForm.reset();
+    });
   }
 });

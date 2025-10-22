@@ -390,6 +390,10 @@ input {
 }
 
 /* === AGENCIES SECTION === */
+#agencies-section h2 {
+  margin-top: 2.5rem;  /* or whatever spacing you want */
+}
+
 .agency-grid {
   display: flex;
   flex-wrap: wrap;
@@ -488,4 +492,30 @@ input {
 
 .agent-card a:hover {
   text-decoration: underline;
+}
+
+.started-tag {
+  display: inline-block;
+  background-color: #ff4d4d;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 3px 10px;
+  margin-top: 6px;
+  text-shadow: 0 0 8px #ff8888;
+  box-shadow: 0 0 10px #ff4d4d;
+}
+
+..started-tag {
+  display: inline-block;
+  background-color: #ff4d4d;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  text-shadow: 0 0 8px #ff9999;
+  box-shadow: 0 0 12px rgba(255, 77, 77, 0.6);
+  letter-spacing: 0.5px;
 }
