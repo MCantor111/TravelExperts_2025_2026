@@ -140,13 +140,12 @@ app.get("/", (req, res) => {
 
 // ---------- API: Create a booking ----------
 app.post("/api/bookings", async (req, res) => {
-  const { CustFirstName, CustLastName, CustEmail, PackageId, TravelerCount } = req.body;
+  const { CustFirstName, CustLastName, CustEmail, PackageName, TravelerCount } = req.body;
 
   try {
-    // 1️⃣ Find the existing registered customer
+    // 1️⃣ Find the customer
     const [rows] = await pool.query(
-      `SELECT CustomerId, CustFirstName, CustLastName, CustEmail
-       FROM customers 
+      `SELECT CustomerId FROM customers 
        WHERE CustFirstName = ? AND CustLastName = ? AND CustEmail = ? 
        LIMIT 1`,
       [CustFirstName, CustLastName, CustEmail]
@@ -158,15 +157,22 @@ app.post("/api/bookings", async (req, res) => {
 
     const CustomerId = rows[0].CustomerId;
 
-    // 2️⃣ Create a booking number and trip type
-    const BookingNo = "BK" + Math.floor(Math.random() * 1000000);
-    let TripTypeId = "B";
-    try {
-      const [tripRows] = await pool.query("SELECT TripTypeId FROM triptypes LIMIT 1");
-      if (tripRows.length > 0) TripTypeId = tripRows[0].TripTypeId;
-    } catch { /* ignore */ }
+    // 2️⃣ Look up the package ID by name
+    const [pkgRows] = await pool.query(
+      "SELECT PackageId, PkgName FROM packages WHERE PkgName = ? LIMIT 1",
+      [PackageName]
+    );
 
-    // 3️⃣ Insert booking
+    if (pkgRows.length === 0) {
+      return res.status(404).json({ ok: false, message: "Package not found." });
+    }
+
+    const { PackageId, PkgName } = pkgRows[0];
+
+    // 3️⃣ Generate booking number and insert
+    const BookingNo = "BK" + Math.floor(Math.random() * 1000000);
+    const TripTypeId = "B"; // default
+
     const [bookResult] = await pool.query(
       `INSERT INTO bookings 
          (BookingDate, BookingNo, TravelerCount, CustomerId, TripTypeId, PackageId)
@@ -174,14 +180,7 @@ app.post("/api/bookings", async (req, res) => {
       [BookingNo, TravelerCount, CustomerId, TripTypeId, PackageId]
     );
 
-    // 4️⃣ Fetch package name for confirmation card
-    const [pkgRows] = await pool.query(
-      "SELECT PkgName FROM packages WHERE PackageId = ? LIMIT 1",
-      [PackageId]
-    );
-    const PkgName = pkgRows.length > 0 ? pkgRows[0].PkgName : "Unknown Package";
-
-    // 5️⃣ Respond with details for UI
+    // 4️⃣ Respond with confirmation data
     res.json({
       ok: true,
       booking: {

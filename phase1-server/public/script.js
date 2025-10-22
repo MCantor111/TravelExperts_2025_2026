@@ -353,26 +353,27 @@ document.addEventListener("DOMContentLoaded", loadAgencies);
 
 
 // =========================
-// ORDER FORM LOGIC (Visual Confirmation)
+// ORDER FORM LOGIC (Popup Confirmation)
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
   const orderForm = document.getElementById("orderForm");
   const pkgField = document.getElementById("package");
-  const confirmation = document.getElementById("confirmation");
 
-  // Fill package from URL parameter
+  // Autofill from ?package=
   const params = new URLSearchParams(window.location.search);
   const selectedPackage = params.get("package");
-  if (pkgField && selectedPackage) pkgField.value = decodeURIComponent(selectedPackage);
+  if (pkgField && selectedPackage)
+    pkgField.value = decodeURIComponent(selectedPackage);
 
-  if (!orderForm || !confirmation) return;
+  if (!orderForm) return;
 
   orderForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // stop reload
+
     const formData = Object.fromEntries(new FormData(orderForm).entries());
 
     try {
-      const res = await fetch("/api/bookings", {
+      const res = await fetch("http://localhost:3000/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -380,53 +381,112 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const result = await res.json();
       if (!result.ok) {
-        alert(`⚠️ ${result.message || "Booking failed."}`);
+        showPopup(`⚠️ ${result.message || "Booking failed."}`, false);
         return;
       }
 
       const b = result.booking;
 
-      // Fade out the form, fade in confirmation
-      orderForm.style.transition = "opacity 0.4s ease";
-      orderForm.style.opacity = "0";
-
-      setTimeout(() => {
-        orderForm.style.display = "none";
-        confirmation.innerHTML = `
-          <div class="confirmation-card">
-            <h2>✅ Booking Confirmed!</h2>
-            <p><strong>Booking #:</strong> ${b.BookingNo}</p>
-            <p><strong>Package:</strong> ${b.PkgName}</p>
-            <p><strong>Name:</strong> ${b.CustFirstName} ${b.CustLastName}</p>
-            <p><strong>Email:</strong> ${b.CustEmail}</p>
-            <p><strong>Traveler Count:</strong> ${b.TravelerCount}</p>
-            <p><strong>Date:</strong> ${b.BookingDate}</p>
-          </div>
-        `;
-
-        const card = document.querySelector(".confirmation-card");
-        Object.assign(card.style, {
-          background: "rgba(69,162,158,0.1)",
-          border: "1px solid rgba(102,252,241,0.3)",
-          padding: "1.5rem",
-          borderRadius: "10px",
-          textAlign: "center",
-          color: "#C5C6C7",
-          boxShadow: "0 0 20px rgba(102,252,241,0.25)",
-          animation: "fadeInUp 0.8s ease-out",
-        });
-      }, 400);
+      // 🔔 success popup with booking details
+      const html = `
+        <h2 style="margin-top:0;">✅ Booking Confirmed!</h2>
+        <p><strong>Booking #:</strong> ${b.BookingNo}</p>
+        <p><strong>Package:</strong> ${b.PkgName}</p>
+        <p><strong>Name:</strong> ${b.CustFirstName} ${b.CustLastName}</p>
+        <p><strong>Email:</strong> ${b.CustEmail}</p>
+        <p><strong>Traveler Count:</strong> ${b.TravelerCount}</p>
+        <p><strong>Date:</strong> ${b.BookingDate}</p>
+      `;
+      showModal(html);
+      orderForm.reset();
     } catch (err) {
-      alert("❌ Could not complete booking: " + err.message);
+      console.error(err);
+      showPopup("❌ Could not complete booking.", false);
     }
   });
 });
 
-// Add animation keyframes dynamically (ensures visual movement)
-const style = document.createElement("style");
-style.textContent = `
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}`;
-document.head.appendChild(style);
+// =========================
+// GENERIC TOAST POPUP (small messages)
+// =========================
+function showPopup(message, success = true) {
+  const popup = document.createElement("div");
+  popup.textContent = message;
+  Object.assign(popup.style, {
+    position: "fixed",
+    top: "20px",
+    right: "20px",
+    background: success
+      ? "rgba(50,205,50,0.15)"
+      : "rgba(255,99,71,0.15)",
+    color: success ? "#0f0" : "#f55",
+    border: `1px solid ${success ? "#32CD32" : "#f55"}`,
+    padding: "1rem 1.5rem",
+    borderRadius: "8px",
+    fontWeight: "bold",
+    zIndex: 9999,
+    boxShadow: "0 0 12px rgba(0,0,0,0.25)",
+    backdropFilter: "blur(6px)",
+    transition: "opacity 0.5s ease",
+  });
+  document.body.appendChild(popup);
+  setTimeout(() => {
+    popup.style.opacity = "0";
+    setTimeout(() => popup.remove(), 500);
+  }, 3000);
+}
+
+// =========================
+// MODAL POPUP (main booking confirmation)
+// =========================
+function showModal(innerHTML) {
+  const overlay = document.createElement("div");
+  Object.assign(overlay.style, {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "rgba(0,0,0,0.6)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9999,
+  });
+
+  const modal = document.createElement("div");
+  Object.assign(modal.style, {
+    background: "#0b0c10",
+    color: "#C5C6C7",
+    border: "1px solid rgba(102,252,241,0.3)",
+    borderRadius: "10px",
+    padding: "2rem",
+    boxShadow: "0 0 20px rgba(102,252,241,0.25)",
+    textAlign: "left",
+    maxWidth: "400px",
+    animation: "fadeInUp 0.5s ease-out",
+  });
+  modal.innerHTML = innerHTML + `
+    <div style="text-align:center; margin-top:1rem;">
+      <button id="closeModalBtn"
+        style="background:linear-gradient(90deg,#45a29e 0%,#66fcf1 100%);
+               color:#0b0c10;
+               font-weight:bold;
+               padding:0.6rem 1.2rem;
+               border:none;
+               border-radius:6px;
+               cursor:pointer;">
+        Close
+      </button>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  document.getElementById("closeModalBtn").addEventListener("click", () => {
+    overlay.style.opacity = "0";
+    setTimeout(() => overlay.remove(), 400);
+  });
+}
