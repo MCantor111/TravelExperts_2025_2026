@@ -107,6 +107,19 @@ function setupAutoFormatting() {
       else postalInput.value = val;
     });
   }
+
+  // Province field auto-format (letters only, 2 chars, uppercase)
+  const provInput = document.getElementById("custProv");
+  if (provInput) {
+    provInput.addEventListener("input", () => {
+      // Remove non-letters and force uppercase
+      let val = provInput.value.toUpperCase().replace(/[^A-Z]/g, "");
+      // Limit to 2 letters
+      if (val.length > 2) val = val.slice(0, 2);
+      provInput.value = val;
+    });
+  }
+
 }
 
 // =========================
@@ -157,6 +170,43 @@ function displayRegistrationResult(result, form) {
 
   form.parentNode.appendChild(div);
 }
+
+// =========================
+// SUCCESS POPUP FEEDBACK
+// =========================
+function showPopup(message, success = true) {
+  // Remove any existing popup
+  document.querySelector(".popup-msg")?.remove();
+
+  const popup = document.createElement("div");
+  popup.className = "popup-msg";
+  popup.textContent = message;
+  popup.style.position = "fixed";
+  popup.style.top = "20px";
+  popup.style.right = "20px";
+  popup.style.padding = "1rem 1.5rem";
+  popup.style.borderRadius = "8px";
+  popup.style.zIndex = "9999";
+  popup.style.fontWeight = "bold";
+  popup.style.boxShadow = "0 0 12px rgba(0,0,0,0.25)";
+  popup.style.color = success ? "#0f0" : "#f55";
+  popup.style.background = success
+    ? "rgba(50,205,50,0.15)"
+    : "rgba(255,99,71,0.15)";
+  popup.style.border = `1px solid ${success ? "#32CD32" : "#f55"}`;
+  popup.style.backdropFilter = "blur(6px)";
+  popup.style.transition = "opacity 0.5s ease";
+  popup.style.opacity = "1";
+
+  document.body.appendChild(popup);
+
+  // Fade out after 3 seconds
+  setTimeout(() => {
+    popup.style.opacity = "0";
+    setTimeout(() => popup.remove(), 500);
+  }, 3000);
+}
+
 
 // =========================
 // REGISTRATION VALIDATION
@@ -264,37 +314,44 @@ async function loadAgencies() {
   if (!container) return;
 
   try {
-    const res = await fetch("/api/agencies");
+    // Force absolute URL to the running Node server
+    const res = await fetch("http://localhost:3000/api/agencies");
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const { ok, data } = await res.json();
-    if (!ok) throw new Error("Bad API response");
+    if (!ok) throw new Error("Bad API data");
 
     container.innerHTML = "";
-    data.forEach(agency => {
-      const agencyCard = document.createElement("div");
-      agencyCard.className = "agency-card";
-
-      const agentsHTML = agency.Agents.map(agent => `
+    data.forEach(a => {
+      const agency = document.createElement("div");
+      agency.className = "agency-card";
+      const agents = a.Agents.map(x => `
         <div class="agent-card">
-          <p><strong>${agent.AgtFirstName} ${agent.AgtLastName}</strong></p>
-          <p>📞 ${agent.AgtBusPhone}</p>
-          <p>✉️ <a href="mailto:${agent.AgtEmail}">${agent.AgtEmail}</a></p>
-        </div>
-      `).join("");
+          <p><strong>${x.AgtFirstName} ${x.AgtLastName}</strong></p>
+          <p>📞 ${x.AgtBusPhone}</p>
+          <p>✉️ <a href="mailto:${x.AgtEmail}">${x.AgtEmail}</a></p>
+        </div>`).join("");
 
-      agencyCard.innerHTML = `
-        <h3>${agency.AgncyCity} Office</h3>
-        <p class="agency-address">${agency.AgncyAddress}, ${agency.AgncyCity}, ${agency.AgncyProv}</p>
-        <p class="agency-phone">📞 ${agency.AgncyPhone}</p>
-        <p class="agency-fax">📠 ${agency.AgncyFax}</p>
-        <div class="agent-list">${agentsHTML}</div>
-      `;
-      container.appendChild(agencyCard);
+      agency.innerHTML = `
+        <h3>${a.AgncyCity} Office</h3>
+        <p class="agency-address">${a.AgncyAddress}, ${a.AgncyCity}, ${a.AgncyProv}</p>
+        <p class="agency-phone">📞 ${a.AgncyPhone}</p>
+        <p class="agency-fax">📠 ${a.AgncyFax}</p>
+        <div class="agent-list">${agents}</div>`;
+      container.appendChild(agency);
     });
   } catch (err) {
-    console.error("Agency load error:", err);
-    container.innerHTML = "<p class='error'>Failed to load agencies.</p>";
+    console.error("❌ Agency load error:", err);
+    container.innerHTML = `
+      <p style="color: #ff8080; font-size: 1.1rem;">
+        ❌ Could not load agencies (see console).<br>
+        <small>${err.message}</small>
+      </p>`;
   }
 }
+
+document.addEventListener("DOMContentLoaded", loadAgencies);
+
 
 // =========================
 // ORDER FORM LOGIC
