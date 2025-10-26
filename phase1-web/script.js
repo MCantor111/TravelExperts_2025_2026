@@ -2,8 +2,8 @@
   ============================================
   File: script.js
   Project: Travel Experts – Workshop 1
-  Author: Cantor (Matte Black ᗰტ)
-  Partner: Metacoda (☣️ケイオバリア☣️)
+  Author: Cantor Zapalski
+  Partner: Metacoda (ChatGPT)
   Date: 2025-10-18
   Description:
     Core JavaScript logic for Travel Experts website.
