@@ -1,42 +1,32 @@
-<!-- 
-  ============================================
+<!--  
+  ============================================================
   File: contact.html
   Project: Travel Experts – Workshop 1
   Author: Cantor Zapalski
   Partner: Metacoda (ChatGPT)
-  Date: 2025-10-18
+  Date: 2025-10-27
   Description:
-    Contact page for Travel Experts.
-    Allows users to submit inquiries via a validated form,
-    and displays company headquarters information.
-    Includes consistent styling and hero section for branding.
-  ============================================
+    Contact page for Travel Experts.  
+    Provides a validated inquiry form and displays 
+    company headquarters information and hours.  
+  ============================================================
 -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- 
-    Meta & Document Configuration
-    - UTF-8 ensures global character compatibility.
-    - Responsive design supported through viewport meta tag.
-  -->
+  <!-- Document Metadata -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Travel Experts | Contact</title>
 
-  <!-- Linked global stylesheet and JavaScript -->
+  <!-- Linked Stylesheet & Script -->
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
 
-  <!-- 
-    Inline Style Block
-    - Provides page-specific styling adjustments for the contact form
-      and company info sections without modifying global CSS.
-  -->
+  <!-- Page-Specific Inline Styles (form layout & company info cards) -->
   <style>
-    /* === CONTACT FORM FIXES === */
+    /* === CONTACT FORM LAYOUT === */
     #contact {
       text-align: center;
       padding: 2rem 1rem;
@@ -58,7 +48,6 @@
     #contactForm label {
       font-weight: bold;
       color: var(--highlight);
-      margin-bottom: 0.3rem;
     }
 
     #contactForm input,
@@ -81,7 +70,7 @@
       border-radius: 6px;
       border: none;
       cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
+      transition: background 0.3s, transform 0.2s;
     }
 
     #contactForm button:hover {
@@ -89,7 +78,7 @@
       transform: scale(1.05);
     }
 
-    /* === COMPANY INFO === */
+    /* === COMPANY INFO CARD === */
     #company-info {
       background: var(--surface);
       border-radius: 12px;
@@ -111,8 +100,8 @@
 </head>
 
 <body>
-  <!-- ================= HEADER ================= -->
-  <!-- Consistent navigation bar across all pages -->
+  <!-- ========== HEADER ========== -->
+  <!-- Shared navigation menu -->
   <header>
     <h1>Travel Experts</h1>
     <nav>
@@ -123,10 +112,9 @@
     </nav>
   </header>
 
-  <!-- ================= MAIN CONTENT ================= -->
+  <!-- ========== MAIN CONTENT ========== -->
   <main>
-    <!-- === HERO SECTION === -->
-    <!-- Displays thematic image and title for page identity -->
+    <!-- HERO: Banner with title and image -->
     <section id="hero">
       <h2>Get in Touch</h2>
       <img 
@@ -135,62 +123,41 @@
       />
     </section>
 
-    <!-- === CONTACT FORM SECTION === -->
-    <!-- Users can send inquiries or feedback -->
+    <!-- CONTACT FORM: User inquiry submission -->
     <section id="contact">
       <h2>We’d Love to Hear From You</h2>
-      <p>Have a question about our trips, or just want to say hello? Drop us a line below!</p>
+      <p>Have a question about our trips or services? Send us a message below.</p>
 
       <form id="contactForm" onsubmit="return sendMessage()">
         <label for="name">Name:</label>
-        <input 
-          type="text" 
-          id="name" 
-          name="name" 
-          placeholder="Enter your name" 
-          required 
-        />
+        <input type="text" id="name" name="name" placeholder="Enter your name" required />
 
         <label for="email">Email:</label>
-        <input 
-          type="email" 
-          id="email" 
-          name="email" 
-          placeholder="Enter your email" 
-          required 
-        />
+        <input type="email" id="email" name="email" placeholder="Enter your email" required />
 
         <label for="message">Message:</label>
-        <textarea 
-          id="message" 
-          name="message" 
-          rows="5" 
-          placeholder="Type your message here..." 
-          required
-        ></textarea>
+        <textarea id="message" name="message" rows="5" placeholder="Type your message here..." required></textarea>
 
         <button type="submit">Send Message</button>
       </form>
 
-      <!-- === COMPANY INFORMATION SECTION === -->
-      <!-- Static content listing corporate contact details -->
+      <!-- COMPANY DETAILS -->
       <div id="company-info">
         <h3>Our Headquarters</h3>
         <p><strong>Address:</strong> 123 Aurora Blvd, Calgary, AB, Canada</p>
         <p><strong>Phone:</strong> +1 (403) 555-8192</p>
         <p><strong>Email:</strong> contact@travelexperts.ca</p>
-        <p><strong>Hours:</strong> Mon–Fri: 9:00AM–6:00PM MDT</p>
+        <p><strong>Hours:</strong> Mon–Fri 9 AM – 6 PM MDT</p>
       </div>
     </section>
   </main>
 
-  <!-- ================= FOOTER ================= -->
+  <!-- ========== FOOTER ========== -->
   <footer>
     <p>© 2025 Travel Experts Inc. All rights reserved.</p>
   </footer>
 
-  <!-- ================= INLINE VALIDATION SCRIPT ================= -->
-  <!-- Validates user input and displays confirmation -->
+  <!-- INLINE VALIDATION: Simple confirmation alert -->
   <script>
     function sendMessage() {
       const name = document.getElementById('name').value.trim();
@@ -198,11 +165,11 @@
       const message = document.getElementById('message').value.trim();
 
       if (!name || !email || !message) {
-        alert('Please fill out all fields before sending!');
+        alert('Please fill out all fields before sending.');
         return false;
       }
 
-      alert(`Thank you, ${name}! Your message has been sent. We'll get back to you soon.`);
+      alert(`Thank you, ${name}! Your message has been sent.`);
       return true;
     }
   </script>
