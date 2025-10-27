@@ -1,13 +1,16 @@
 <?php
-file_put_contents("debug_log.txt", print_r($_SERVER, true), FILE_APPEND);
-file_put_contents("debug_log.txt", print_r($_POST, true), FILE_APPEND);
+// =====================================
+// File: bouncer.php
+// Purpose: Log registration data to terminal (no web output)
+// =====================================
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  echo "<h1>Form Submission Received!</h1>";
-  echo "<pre>";
-  print_r($_POST);
-  echo "</pre>";
+    error_log("=== New Registration Submission ===");
+    error_log(print_r($_POST, true));
+    http_response_code(200);
+    echo "OK"; // return minimal success response
 } else {
-  echo "<h2>No data received. Please submit the form.</h2>";
+    http_response_code(405);
+    echo "Method Not Allowed";
 }
 ?>
