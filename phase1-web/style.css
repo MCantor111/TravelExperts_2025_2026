@@ -1,15 +1,22 @@
-/*------------------------------------------
-  ============================================
+/*  
+  ============================================================
   File: style.css
   Project: Travel Experts – Workshop 1
-  Author: Cantor Zapalski
-  Partner: Metacoda (ChatGPT)
-  Date: 2025-10-26
-  ============================================
-  ------------------------------------------
+  Author: Cantor Zapalski  
+  Partner: Metacoda (ChatGPT – VΞR1FΞX)
+  Date: 2025-10-27
+  Description:
+    Global site styling for the Travel Experts website.  
+    Defines dark-theme color palette, layout grid, 
+    responsive adjustments, interactive states, 
+    and inline validation feedback.
+  ============================================================
 */
 
-/* === ROOT THEME VARIABLES === */
+/* ------------------------------------------------------------
+   ROOT THEME VARIABLES
+   Centralized color & typography controls for dark theme.
+-------------------------------------------------------------*/
 :root {
   --bg: #0b0c10;
   --surface: #1f2833;
@@ -19,7 +26,9 @@
   --font-main: 'Poppins', sans-serif;
 }
 
-/* === GLOBAL === */
+/* ------------------------------------------------------------
+   GLOBAL ELEMENT STYLES
+-------------------------------------------------------------*/
 * {
   margin: 0;
   padding: 0;
@@ -38,7 +47,9 @@ h1, h2, h3 {
   color: var(--highlight);
 }
 
-/* === HEADER === */
+/* ------------------------------------------------------------
+   HEADER & NAVIGATION BAR
+-------------------------------------------------------------*/
 header {
   background: var(--surface);
   display: flex;
@@ -59,29 +70,35 @@ nav a:hover {
   color: var(--highlight);
 }
 
-/* === HERO SECTION === */
+nav a.active {
+  color: var(--highlight);
+  text-shadow: 0 0 8px var(--highlight);
+}
+
+/* ------------------------------------------------------------
+   HERO SECTION (animated gradient + rotating image)
+-------------------------------------------------------------*/
 #hero {
   position: relative;
   overflow: hidden;
-}
-
-#hero::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 35%;
-  background: linear-gradient(to top, rgba(11, 12, 16, 0.8), transparent);
+  background: linear-gradient(270deg, #0b0c10, #1f2833, #45a29e, #66fcf1);
+  background-size: 400% 400%;
+  animation: auroraFlow 12s ease-in-out infinite;
   border-radius: 12px;
-  pointer-events: none;
+  text-align: center;
+  padding: 3rem 1rem;
+  box-shadow: 0 0 30px rgba(102, 252, 241, 0.2);
 }
 
+#hero h2 {
+  animation: auroraText 12s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(102, 252, 241, 0.3);
+}
 
 #hero img {
   width: 100%;
-  height: 250px;                /* cropped height */
-  object-fit: cover;            /* keeps horizon centered */
+  height: 250px;
+  object-fit: cover;
   border-radius: 12px;
   margin-top: 1rem;
   box-shadow: 0 0 30px rgba(102, 252, 241, 0.3);
@@ -92,9 +109,10 @@ nav a:hover {
   transform: scale(1.02);
 }
 
-
-/* === DESTINATIONS === */
-#destinations {
+/* ------------------------------------------------------------
+   PACKAGE / DESTINATION CARDS
+-------------------------------------------------------------*/
+#packages {
   padding: 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -107,7 +125,7 @@ nav a:hover {
   padding: 1.5rem;
   text-align: center;
   box-shadow: 0 0 10px rgba(69, 162, 158, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .card:hover {
@@ -122,7 +140,7 @@ nav a:hover {
   border-radius: 8px;
   margin-bottom: 1rem;
   box-shadow: 0 0 15px rgba(102, 252, 241, 0.2);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: transform 0.4s, box-shadow 0.4s;
 }
 
 .card img:hover {
@@ -130,39 +148,9 @@ nav a:hover {
   box-shadow: 0 0 25px rgba(102, 252, 241, 0.4);
 }
 
-
-/* === INDIVIDUAL CARD IMAGE REFS === */
-.card1 img,
-.card2 img,
-.card3 img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  object-position: center 30%; /* identical for now */
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  box-shadow: 0 0 15px rgba(102, 252, 241, 0.2);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.card1 img:hover,
-.card2 img:hover,
-.card3 img:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 25px rgba(102, 252, 241, 0.4);
-}
-
-.card1 img:hover,
-.card2 img:hover,
-.card3 img:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 25px rgba(102, 252, 241, 0.4);
-}
-
-.card1 img { object-position: center 70%; }
-.card2 img { object-position: center 55%; }
-.card3 img { object-position: center 40%; }
-
+/* ------------------------------------------------------------
+   BUTTONS (global)
+-------------------------------------------------------------*/
 button {
   background: var(--accent);
   color: var(--bg);
@@ -172,7 +160,7 @@ button {
   cursor: pointer;
   margin-top: 1rem;
   font-weight: bold;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: background 0.3s, transform 0.2s;
 }
 
 button:hover {
@@ -180,18 +168,9 @@ button:hover {
   transform: scale(1.05);
 }
 
-/* === CONTACT === */
-#contact {
-  text-align: center;
-  padding: 3rem 1rem;
-}
-
-#contact a {
-  color: var(--highlight);
-  text-decoration: underline;
-}
-
-/* === FOOTER === */
+/* ------------------------------------------------------------
+   FOOTER
+-------------------------------------------------------------*/
 footer {
   background: var(--surface);
   text-align: center;
@@ -202,146 +181,45 @@ footer {
   border-top: 1px solid var(--accent);
 }
 
-/* === RESPONSIVE === */
+/* ------------------------------------------------------------
+   RESPONSIVE DESIGN
+-------------------------------------------------------------*/
 @media (max-width: 768px) {
   header {
     flex-direction: column;
   }
-
   nav a {
     margin: 0.5rem;
   }
-
-  #hero img {
-    max-width: 100%;
-  }
 }
 
-/* === ANIMATIONS === */
-@keyframes fadeZoom {
-  0% { opacity: 0; transform: scale(1.05); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-#hero {
-  animation: fadeZoom 2.5s ease-out forwards;
-}
-
-/* === HERO BACKGROUND ANIMATION === */
+/* ------------------------------------------------------------
+   ANIMATIONS (aurora background, pulse)
+-------------------------------------------------------------*/
 @keyframes auroraFlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* === HERO SECTION === */
-@keyframes auroraFlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 @keyframes auroraText {
-  0% {
-    color: #0b0c10; /* dark */
-  }
-  25% {
-    color: #1f2833; /* dim teal */
-  }
-  50% {
-    color: var(--highlight); /* bright cyan peak */
-  }
-  75% {
-    color: #1f2833; /* fading */
-  }
-  100% {
-    color: #0b0c10;
-  }
+  0%, 100% { color: #0b0c10; }
+  50% { color: var(--highlight); }
 }
 
-#hero {
-  background: linear-gradient(270deg, #0b0c10, #1f2833, #45a29e, #66fcf1);
-  background-size: 400% 400%;
-  animation: auroraFlow 12s ease-in-out infinite;
-  border-radius: 12px;
-  text-align: center;
-  padding: 3rem 1rem;
-  box-shadow: 0 0 30px rgba(102, 252, 241, 0.2);
-  overflow: hidden;
-}
-
-#hero h2 {
-  animation: auroraText 12s ease-in-out infinite;
-  text-shadow: 0 0 10px rgba(102, 252, 241, 0.3);
-  transition: text-shadow 1s ease;
-}
-
-/* === BUTTON PULSE AESTHETIC === */
 @keyframes auroraPulse {
   0%, 100% {
-    box-shadow: 0 0 5px rgba(102, 252, 241, 0.2),
-                0 0 10px rgba(102, 252, 241, 0.1);
+    box-shadow: 0 0 5px rgba(102, 252, 241, 0.2);
     transform: scale(1);
   }
-  25%, 75% {
-    box-shadow: 0 0 15px rgba(102, 252, 241, 0.4),
-                0 0 25px rgba(102, 252, 241, 0.2);
-    transform: scale(1.02);
-  }
   50% {
-    box-shadow: 0 0 30px rgba(102, 252, 241, 0.6),
-                0 0 45px rgba(102, 252, 241, 0.3);
+    box-shadow: 0 0 30px rgba(102, 252, 241, 0.6);
     transform: scale(1.04);
   }
 }
 
-.card button {
-  animation: auroraPulse 12s ease-in-out infinite;
-  background-color: #45a29e;
-  color: #0b0c10;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.card button:hover {
-  background-color: #66fcf1;
-  transform: scale(1.08);
-}
-
-/* === PAGE WRAPPERS === */
-main {
-  padding: 2rem;
-  max-width: 1000px;
-  margin: auto;
-}
-
-.hero-section, .form-section, .contact-section {
-  margin-top: 2rem;
-  text-align: center;
-}
-
-/* highlight active nav link */
-nav a.active {
-  color: var(--highlight);
-  text-shadow: 0 0 8px var(--highlight);
-}
-
+/* ------------------------------------------------------------
+   FORM STYLING (register & contact)
+-------------------------------------------------------------*/
 form {
   max-width: 600px;
   margin: 2rem auto;
@@ -353,8 +231,10 @@ form {
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: 220px 1fr; /* label + input */
+  column-gap: 2rem;
+  row-gap: 1rem;
+  align-items: center;
 }
 
 label {
@@ -362,206 +242,90 @@ label {
   color: var(--highlight);
 }
 
-input {
-  background: var(--bg);
-  color: var(--text);
-  border: 1px solid var(--accent);
-  border-radius: 6px;
-  padding: 0.5rem;
-}
-
-.form-actions {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-/* ======= POPUP STYLING ======= */
-.popup {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex; justify-content: center; align-items: center;
-  z-index: 1000;
-}
-
-.popup.hidden {
-  display: none;
-}
-
-.popup-content {
-  background: var(--card-bg, #1a1a1a);
-  padding: 2rem;
-  border-radius: 12px;
-  width: 300px;
-  text-align: center;
-  box-shadow: 0 0 15px var(--highlight, #7fffd4);
-}
-
-.popup-content h3 {
-  margin-bottom: 1rem;
-}
-
-.popup-content input {
-  width: 90%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  border: 1px solid var(--accent, #66cccc);
-  border-radius: 6px;
-  background: #111;
-  color: #fff;
-}
-
-.popup-actions button {
-  margin: 0.3rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background-color: var(--accent, #66cccc);
-  color: #000;
-  font-weight: bold;
-}
-
-.popup-actions button:hover {
-  background-color: var(--highlight, #7fffd4);
-}
-
-/* Match dropdown (select) styling to text inputs */
-select, 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-textarea {
+input, select, textarea {
   background: var(--bg);
   color: var(--text);
   border: 1px solid var(--accent);
   border-radius: 6px;
   padding: 0.6rem;
   width: 100%;
-  box-sizing: border-box;
-  font-size: 1rem;
-  transition: border-color 0.3s ease, background 0.3s ease;
+  transition: border-color 0.3s, background 0.3s;
 }
 
-/* Focus state for all form fields (including dropdowns) */
-select:focus,
-input:focus,
-textarea:focus {
+input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--highlight);
-  background: rgba(69,162,158,0.15);
+  background: rgba(69, 162, 158, 0.15);
 }
 
-/* Dropdown arrow styling for dark mode (Webkit + Firefox) */
-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%2366fcf1' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1rem;
-  padding-right: 2rem;
-  cursor: pointer;
-}
-
-/* Adjust disabled and readonly states (like Canada field) */
 input[readonly] {
-  background: rgba(69,162,158,0.1);
-  color: var(--text);
+  background: rgba(69, 162, 158, 0.1);
   cursor: not-allowed;
 }
 
-/* Improve dropdown list contrast */
-select {
-  background-color: var(--bg);
-  color: var(--text);
-}
-
-/* Force darker text inside dropdown options (for browsers like Chrome, Edge, Firefox) */
-select option {
-  background-color: var(--bg);
-  color: #e6f9ff; /* slightly brighter teal-white for better contrast */
-}
-
-/* Highlighted option during selection */
-select option:checked,
-select option:hover,
-select option:focus {
-  background-color: rgba(102, 252, 241, 0.25); /* highlight tone */
-  color: #ffffff; /* pure white when active */
-}
-
-/* Inline error message styling */
+/* ------------------------------------------------------------
+   INLINE ERROR MESSAGES (registration form)
+-------------------------------------------------------------*/
 .error-message {
-  color: #ff6666;
-  font-size: 0.9rem;
-  margin-top: 0.2rem;
-  display: block;
-  text-align: right;
-  opacity: 0.9;
-}
-
-/* Highlight invalid input fields */
-input.invalid, select.invalid, textarea.invalid {
-  border-color: #ff6666 !important;
-  box-shadow: 0 0 8px rgba(255, 102, 102, 0.4);
-}
-
-/* --- Inline validation messages: tidy grid spacing --- */
-/* tune these two to your layout */
-:root{
-  --label-col: 220px;        /* width of the left label column */
-  --grid-gap-x: 2rem;        /* horizontal gap between columns */
-}
-
-.form-grid{
-  display: grid;
-  grid-template-columns: var(--label-col) 1fr;
-  column-gap: var(--grid-gap-x);
-  row-gap: 1rem;
-  align-items: center;       /* labels stay vertically centered to inputs */
-}
-
-/* inputs/selects get a little gap before their error line */
-.form-grid input,
-.form-grid select,
-.form-grid textarea{
-  margin-bottom: 0.15rem;
-}
-
-/* make the error message take a whole row, then indent so it sits under the input */
-.error-message{
-  grid-column: 1 / -1; /* span both columns to reserve the row */
-  padding-left: calc(var(--label-col) + var(--grid-gap-x)); /* visually align under the input */
-  margin-top: 0; 
+  grid-column: 1 / -1;
+  padding-left: calc(220px + 2rem);
   margin-bottom: 0.6rem;
   color: #ff7a7a;
   font-size: 0.9rem;
   line-height: 1.2;
 }
 
-/* red outline for invalid fields */
-.invalid{
+.invalid {
   border-color: #ff7a7a !important;
   box-shadow: 0 0 0 2px rgba(255, 122, 122, 0.18) inset;
 }
 
-/* ================================
-   FIX: Preserve dark theme on autofill
-   ================================ */
+/* ------------------------------------------------------------
+   POPUP LOGIN (packages.html)
+-------------------------------------------------------------*/
+.popup {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup.hidden { display: none; }
+
+.popup-content {
+  background: #1a1a1a;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 0 15px var(--highlight);
+}
+
+.popup-content input {
+  width: 90%;
+  margin-bottom: 1rem;
+  background: #111;
+  color: #fff;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+/* ------------------------------------------------------------
+   AUTOFILL FIX (dark-theme persistence)
+-------------------------------------------------------------*/
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
 textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
+select:-webkit-autofill {
+  -webkit-text-fill-color: #eafcff;
+  -webkit-box-shadow: 0 0 0px 1000px #10141a inset;
   border: 1px solid var(--accent);
-  -webkit-text-fill-color: #eafcff; /* matches your normal input text */
-  -webkit-box-shadow: 0 0 0px 1000px #10141a inset; /* restores dark bg */
   transition: background-color 5000s ease-in-out 0s;
 }
