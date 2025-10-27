@@ -2,8 +2,8 @@
   ============================================
   File: db.js
   Project: Travel Experts – Workshop 2
-  Author: Cantor (Matte Black ᗰტ)
-  Partner: VΞR1FΞX
+  Author: Cantor Zapalski
+  Partner: Metacoda (ChatGPT)
   Date: 2025-10-22
   Description:
     MySQL connection pool (ES Module version)

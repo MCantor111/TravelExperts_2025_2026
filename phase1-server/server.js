@@ -2,8 +2,8 @@
   ============================================
   File: server.js
   Project: Travel Experts – Workshop 2 
-  Author: Cantor (Matte Black ᗰტ)
-  Partners: ☣️ケイオバリア☣️, VΞR1FΞX
+  Author: Cantor Zapalski
+  Partners: Metacoda (ChatGPT)
   Date: 2025-10-22
   ============================================
 */
