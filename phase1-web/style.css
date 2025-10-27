@@ -415,3 +415,124 @@ input {
 .popup-actions button:hover {
   background-color: var(--highlight, #7fffd4);
 }
+
+/* Match dropdown (select) styling to text inputs */
+select, 
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.6rem;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+/* Focus state for all form fields (including dropdowns) */
+select:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--highlight);
+  background: rgba(69,162,158,0.15);
+}
+
+/* Dropdown arrow styling for dark mode (Webkit + Firefox) */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%2366fcf1' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2rem;
+  cursor: pointer;
+}
+
+/* Adjust disabled and readonly states (like Canada field) */
+input[readonly] {
+  background: rgba(69,162,158,0.1);
+  color: var(--text);
+  cursor: not-allowed;
+}
+
+/* Improve dropdown list contrast */
+select {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Force darker text inside dropdown options (for browsers like Chrome, Edge, Firefox) */
+select option {
+  background-color: var(--bg);
+  color: #e6f9ff; /* slightly brighter teal-white for better contrast */
+}
+
+/* Highlighted option during selection */
+select option:checked,
+select option:hover,
+select option:focus {
+  background-color: rgba(102, 252, 241, 0.25); /* highlight tone */
+  color: #ffffff; /* pure white when active */
+}
+
+/* Inline error message styling */
+.error-message {
+  color: #ff6666;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+  display: block;
+  text-align: right;
+  opacity: 0.9;
+}
+
+/* Highlight invalid input fields */
+input.invalid, select.invalid, textarea.invalid {
+  border-color: #ff6666 !important;
+  box-shadow: 0 0 8px rgba(255, 102, 102, 0.4);
+}
+
+/* --- Inline validation messages: tidy grid spacing --- */
+/* tune these two to your layout */
+:root{
+  --label-col: 220px;        /* width of the left label column */
+  --grid-gap-x: 2rem;        /* horizontal gap between columns */
+}
+
+.form-grid{
+  display: grid;
+  grid-template-columns: var(--label-col) 1fr;
+  column-gap: var(--grid-gap-x);
+  row-gap: 1rem;
+  align-items: center;       /* labels stay vertically centered to inputs */
+}
+
+/* inputs/selects get a little gap before their error line */
+.form-grid input,
+.form-grid select,
+.form-grid textarea{
+  margin-bottom: 0.15rem;
+}
+
+/* make the error message take a whole row, then indent so it sits under the input */
+.error-message{
+  grid-column: 1 / -1; /* span both columns to reserve the row */
+  padding-left: calc(var(--label-col) + var(--grid-gap-x)); /* visually align under the input */
+  margin-top: 0; 
+  margin-bottom: 0.6rem;
+  color: #ff7a7a;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+/* red outline for invalid fields */
+.invalid{
+  border-color: #ff7a7a !important;
+  box-shadow: 0 0 0 2px rgba(255, 122, 122, 0.18) inset;
+}
