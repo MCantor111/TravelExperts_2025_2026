@@ -1,0 +1,55 @@
+Array
+(
+    [DOCUMENT_ROOT] => C:\Users\DrTom\OneDrive\Documentos\GitHub\TravelExperts\phase1-web
+    [REMOTE_ADDR] => ::1
+    [REMOTE_PORT] => 55050
+    [SERVER_SOFTWARE] => PHP/8.4.13 (Development Server)
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [SERVER_NAME] => localhost
+    [SERVER_PORT] => 8000
+    [REQUEST_URI] => /bouncer.php
+    [REQUEST_METHOD] => POST
+    [SCRIPT_NAME] => /bouncer.php
+    [SCRIPT_FILENAME] => C:\Users\DrTom\OneDrive\Documentos\GitHub\TravelExperts\phase1-web\bouncer.php
+    [PHP_SELF] => /bouncer.php
+    [HTTP_HOST] => localhost:8000
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 1275
+    [HTTP_CONTENT_LENGTH] => 1275
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
+    [HTTP_SEC_CH_UA] => "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
+    [CONTENT_TYPE] => multipart/form-data; boundary=----WebKitFormBoundaryWHO5EDDAEE1E7ijd
+    [HTTP_CONTENT_TYPE] => multipart/form-data; boundary=----WebKitFormBoundaryWHO5EDDAEE1E7ijd
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:8000
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:8000/register.html
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-CA,en-GB;q=0.9,en-US;q=0.8,en;q=0.7
+    [REQUEST_TIME_FLOAT] => 1760757611.2733
+    [REQUEST_TIME] => 1760757611
+    [argv] => Array
+        (
+        )
+
+    [argc] => 0
+)
+Array
+(
+    [custFirstName] => test
+    [custLastName] => test
+    [custAddress] => test
+    [custCity] => test
+    [custProv] => test
+    [custCountry] => test
+    [custPostal] => test
+    [custEmail] => test@email.com
+    [custHomePhone] => test
+    [custBusPhone] => test
+    [userId] => test
+    [custPassword] => password
+)

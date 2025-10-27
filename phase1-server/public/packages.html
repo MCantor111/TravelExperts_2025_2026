@@ -1,0 +1,67 @@
+<!-- ============================================
+     File: packages.html
+     Project: Travel Experts – Workshop 2
+     Author: Cantor (Matte Black ᗰტ)
+     Partner: Metacoda (☣️ケイオバリア☣️, VΞR1FΞX)
+       Dynamically displays travel packages from the
+       Express + MySQL backend API.
+     ============================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Packages | Travel Experts</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+  <style>
+    /* quick inline safety styling for visibility */
+    #packages-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+    .card:hover { transform: scale(1.02); }
+    .card h3 { margin-top: 0; }
+    .started { color: red; font-weight: bold; }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>Travel Experts</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="packages.html" class="active">Packages</a>
+      <a href="register.html">Register</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero">
+    <h2>Our Exclusive Travel Packages</h2>
+    <p>All packages displayed below are live from the database.</p>
+  </section>
+
+  <!-- PACKAGES -->
+  <section id="packages">
+    <div id="packages-container"><p>Loading packages...</p></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
+  </footer>
+</body>
+</html>

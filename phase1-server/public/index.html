@@ -1,0 +1,86 @@
+<!-- 
+  ============================================
+  File: index.html
+  Project: Travel Experts – Workshop 2
+  Author: Cantor (Matte Black ᗰტ) 
+  Partner: Metacoda (☣️ケイオバリア☣️)
+  Date: 2025-10-21
+  Description:
+    Main landing page for the Travel Experts website.
+    Introduces the company, displays a dynamic hero image,
+    and links users to other sections (Destinations, Register, Contact).
+  ============================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- 
+    Meta & Title Information 
+    - UTF-8 encoding ensures global compatibility.
+    - Viewport tag provides responsive scaling on mobile devices.
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Experts | Home</title>
+
+  <!-- Linked Stylesheet & JavaScript -->
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <!-- ================= HEADER ================= -->
+  <!-- Contains company branding and global navigation bar -->
+  <header>
+    <h1>Travel Experts</h1>
+    <nav>
+      <!-- Active link highlights current page -->
+      <a href="index.html" class="active">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="register.html">Register</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main>
+    <!-- === HERO SECTION === -->
+    <!-- Displays a rotating image (via script.js) and tagline -->
+    <section id="hero">
+      <h2>Discover Your Next Adventure</h2>
+      <img 
+        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" 
+        alt="Ocean horizon at sunset" 
+      />
+    </section>
+
+    <!-- === INTRO SECTION === -->
+    <!-- Provides a short description and clear CTAs (Call-To-Action buttons) -->
+    <section id="intro" style="text-align:center; padding:2rem 1rem;">
+      <h2>Welcome to Travel Experts</h2>
+      <p>
+        Embark on extraordinary journeys tailored just for you. 
+        From the beaches of Bali to the skylines of Tokyo and the romance of Paris,
+        we bring your dream destinations to life.
+      </p>
+
+      <!-- CTA Buttons: link users to core functional pages -->
+      <p style="margin-top:1.5rem;">
+        <a href="packages.html">
+          <button>Explore Packages</button>
+        </a>
+        <a href="register.html">
+          <button>Join Us</button>
+        </a>
+      </p>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <!-- Simple copyright footer -->
+  <footer>
+    <p>© 2025 Travel Experts Inc. All rights reserved.</p>
+  </footer>
+</body>
+</html>
