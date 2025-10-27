@@ -4,7 +4,7 @@
   Project: Travel Experts – Workshop 1
   Author: Cantor Zapalski
   Partner: Metacoda (ChatGPT)
-  Date: 2025-10-25
+  Date: 2025-10-26
   Description:
     Core JavaScript logic for Travel Experts website.
     Handles smooth scrolling, image slideshow, form
@@ -121,11 +121,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const formData = new FormData(form);
       try {
-        await fetch(form.action, { method: "POST", body: formData });
+        const response = await fetch(form.action, { method: "POST", body: formData });
+
+        if (!response.ok) {
+          throw new Error("Server returned a non-OK status.");
+        }
+
         alert("✅ Registration successful! Thank you for joining Travel Experts.");
         form.reset();
       } catch (err) {
-        alert("Something went wrong: " + err.message);
+        // 💬 Friendly offline/server error message
+        if (err.message.includes("Failed to fetch")) {
+          alert("❌ Cannot find endpoint to POST to.\n\nPlease ensure the PHP server is running.");
+        } else {
+          alert("❌ Something went wrong: " + err.message);
+        }
       }
     });
   }
@@ -177,31 +187,24 @@ function validateRegistration() {
 
   let valid = true;
 
-  // Remove previous errors before revalidating
   document.querySelectorAll(".error-message").forEach(el => el.remove());
   document.querySelectorAll(".invalid").forEach(el => el.classList.remove("invalid"));
 
-  // Helper function to show error beside a field
   const showError = (id, message) => {
     const field = document.getElementById(id);
     if (!field) return;
     field.classList.add("invalid");
-
     const error = document.createElement("span");
     error.className = "error-message";
     error.textContent = message;
-
-    // Insert right after the field
     field.insertAdjacentElement("afterend", error);
     valid = false;
   };
 
-  // Validate required fields
+  // Required fields
   for (const id of required) {
     const field = document.getElementById(id);
-    if (!field.value.trim()) {
-      showError(id, "This field is required.");
-    }
+    if (!field.value.trim()) showError(id, "This field is required.");
   }
 
   // Email format
@@ -233,7 +236,6 @@ function validateRegistration() {
 
   return valid;
 }
-
 
 
 // =========================
