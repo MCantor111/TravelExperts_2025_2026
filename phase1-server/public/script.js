@@ -243,7 +243,9 @@ async function loadPackages() {
     const now=new Date();
 
     data.forEach(pkg=>{
-      const started=new Date(pkg.PkgStartDate)<now;
+      const startDate = new Date(pkg.PkgStartDate);
+      const started = startDate <= now;
+
       const imgSrc=imgMap[pkg.PkgName]||"";
       const card=document.createElement("div");
       card.className="card";
@@ -251,7 +253,7 @@ async function loadPackages() {
         ${imgSrc?`<img src="${imgSrc}" alt="${pkg.PkgName}">`:""}
         <h3>${pkg.PkgName}</h3>
         <p>${pkg.PkgDesc||"Explore this exclusive travel experience."}</p>
-        ${started?`<p class="started">STARTED</p>`:""}
+        ${started ? `<p class="started">STARTED</p>` : ""}
         <p><strong>Start:</strong> ${pkg.PkgStartDate.slice(0,10)}</p>
         <p><strong>End:</strong> ${pkg.PkgEndDate.slice(0,10)}</p>
         <p><strong>Price:</strong> $${Number(pkg.PkgBasePrice).toFixed(2)}</p>
