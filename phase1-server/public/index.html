@@ -4,11 +4,13 @@
   Project: Travel Experts – Workshop 2
   Author: Cantor Zapalski
   Partner: Metacoda (ChatGPT)
-  Date: 2025-10-21
+  Date: 2025-10-27
+  ============================================
   Description:
     Main landing page for the Travel Experts website.
-    Introduces the company, displays a dynamic hero image,
-    and links users to other sections (Destinations, Register, Contact).
+    Introduces the company, displays a rotating hero image,
+    and provides navigation links to other pages such as
+    Packages, Register, and Contact.
   ============================================
 -->
 
@@ -16,26 +18,31 @@
 <html lang="en">
 <head>
   <!-- 
-    Meta & Title Information 
-    - UTF-8 encoding ensures global compatibility.
-    - Viewport tag provides responsive scaling on mobile devices.
+    ================= META INFORMATION =================
+    - charset ensures universal text encoding support.
+    - viewport ensures responsive scaling on mobile devices.
   -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Travel Experts | Home</title>
 
-  <!-- Linked Stylesheet & JavaScript -->
+  <!-- ================= LINKED RESOURCES =================
+       style.css provides consistent styling.
+       script.js enables dynamic page functionality (e.g., hero image rotation).
+  -->
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
 </head>
 
 <body>
-  <!-- ================= HEADER ================= -->
-  <!-- Contains company branding and global navigation bar -->
+  <!-- =====================================================
+       HEADER SECTION
+       Contains the site title and global navigation links.
+       The 'active' class highlights the current page.
+  ====================================================== -->
   <header>
     <h1>Travel Experts</h1>
     <nav>
-      <!-- Active link highlights current page -->
       <a href="index.html" class="active">Home</a>
       <a href="packages.html">Packages</a>
       <a href="register.html">Register</a>
@@ -43,34 +50,49 @@
     </nav>
   </header>
 
-  <!-- ================= MAIN CONTENT ================= -->
+  <!-- =====================================================
+       MAIN CONTENT SECTION
+       This is the central visual and informational focus
+       of the page, including hero and introductory content.
+  ====================================================== -->
   <main>
-    <!-- === HERO SECTION === -->
-    <!-- Displays a rotating image (via script.js) and tagline -->
+
+    <!-- ================= HERO SECTION =================
+         Displays a large rotating banner image and tagline.
+         The image rotation logic is handled in script.js.
+    -->
     <section id="hero">
       <h2>Discover Your Next Adventure</h2>
       <img 
         src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" 
-        alt="Ocean horizon at sunset" 
+        alt="Ocean horizon at sunset"
       />
     </section>
 
-    <!-- === INTRO SECTION === -->
-    <!-- Provides a short description and clear CTAs (Call-To-Action buttons) -->
+    <!-- ================= INTRODUCTION SECTION =================
+         Welcomes the visitor with descriptive text and two 
+         call-to-action (CTA) buttons: one leading to the Packages page
+         and one to the Registration form.
+    -->
     <section id="intro" style="text-align:center; padding:2rem 1rem;">
       <h2>Welcome to Travel Experts</h2>
+
+      <!-- Brief marketing description -->
       <p>
         Embark on extraordinary journeys tailored just for you. 
         From the beaches of Bali to the skylines of Tokyo and the romance of Paris,
         we bring your dream destinations to life.
       </p>
 
-      <!-- CTA Buttons: link users to core functional pages -->
+      <!-- CTA Buttons for navigation -->
       <p style="margin-top:1.5rem;">
         <div class="hero-buttons">
+          <!-- Primary button → leads to package list -->
           <button class="primary-btn" onclick="window.location.href='packages.html'">
             Explore Packages
           </button>
+
+          <!-- Secondary button → leads to registration form -->
           <button class="secondary-btn" onclick="window.location.href='register.html'">
             Join Us
           </button>
@@ -79,8 +101,10 @@
     </section>
   </main>
 
-  <!-- ================= FOOTER ================= -->
-  <!-- Simple copyright footer -->
+  <!-- =====================================================
+       FOOTER SECTION
+       Provides copyright information.
+  ====================================================== -->
   <footer>
     <p>© 2025 Travel Experts Inc. All rights reserved.</p>
   </footer>

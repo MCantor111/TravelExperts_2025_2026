@@ -4,25 +4,36 @@
   Project: Travel Experts – Workshop 2 (Refined)
   Author: Cantor Zapalski
   Partner: Metacoda (ChatGPT)
-  Date: 2025-10-26
+  Date: 2025-10-27
+  ============================================
   Description:
-    Merges Workshop 1’s styling & inline-error validation 
-    into Workshop 2’s Node-integrated structure.
+    Customer registration page that merges Workshop 1’s
+    client-side validation and modernized UX with Workshop 2’s
+    Express + MySQL backend integration.
+    Includes inline error validation, auto-formatting for
+    phone and postal code fields, and a dynamic success popup.
   ============================================
 -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ================= META & HEAD ================= -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Customer Registration | Travel Experts</title>
 
+  <!-- style.css for layout / colors; script.js for validation and form handling -->
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
 </head>
 
 <body>
+  <!-- =====================================================
+       HEADER SECTION
+       Shared across all site pages — includes logo / title
+       and navigation menu with the active page highlighted.
+  ====================================================== -->
   <header>
     <h1>Travel Experts</h1>
     <nav>
@@ -33,17 +44,39 @@
     </nav>
   </header>
 
+  <!-- =====================================================
+       HERO SECTION
+       Simple heading establishing the context of the page.
+  ====================================================== -->
   <section id="hero">
     <h2>Customer Registration</h2>
   </section>
 
-  <section id="registration-intro" style="text-align:center;padding:1rem;">
+  <!-- =====================================================
+       INTRODUCTORY TEXT
+       Provides a short marketing statement to invite sign-ups.
+  ====================================================== -->
+  <section id="registration-intro" style="text-align:center; padding:1rem;">
     <p>Join Travel Experts and let us plan your next adventure.</p>
   </section>
 
+  <!-- =====================================================
+       REGISTRATION FORM
+       Submits via POST to the backend endpoint:
+       http://localhost:3000/api/register
+       - Uses novalidate → JS handles validation manually.
+       - Fields match database schema columns exactly.
+  ====================================================== -->
   <section id="registration">
-    <form id="registrationForm" action="http://localhost:3000/api/register" method="post" novalidate>
+    <form id="registrationForm"
+          action="http://localhost:3000/api/register"
+          method="post"
+          novalidate>
+      
+      <!-- ---------- GRID-BASED LAYOUT ---------- -->
       <div class="form-grid">
+
+        <!-- Required text inputs -->
         <label for="custFirstName">First Name:</label>
         <input type="text" id="custFirstName" name="CustFirstName" required />
 
@@ -56,6 +89,8 @@
         <label for="custCity">City:</label>
         <input type="text" id="custCity" name="CustCity" required />
 
+        <!-- Province dropdown with 2-letter values
+             and full-name labels for user clarity -->
         <label for="custProv">Province:</label>
         <select id="custProv" name="CustProv" required>
           <option value="">Select Province</option>
@@ -74,22 +109,38 @@
           <option value="YT">Yukon</option>
         </select>
 
+        <!-- Canadian postal-code field (auto-formatted by script.js) -->
         <label for="custPostal">Postal Code:</label>
-        <input type="text" id="custPostal" name="CustPostal" placeholder="e.g. T2N 1N4" required />
+        <input type="text" id="custPostal"
+               name="CustPostal"
+               placeholder="e.g. T2N 1N4"
+               required />
 
+        <!-- Country is immutable — always “Canada” -->
         <label for="custCountry">Country:</label>
-        <input type="text" id="custCountry" name="CustCountry" value="Canada" readonly />
+        <input type="text" id="custCountry"
+               name="CustCountry"
+               value="Canada"
+               readonly />
 
+        <!-- Home / Business phone numbers -->
         <label for="custHomePhone">Home Phone:</label>
-        <input type="tel" id="custHomePhone" name="CustHomePhone" placeholder="e.g. 403-555-8192" required />
+        <input type="tel" id="custHomePhone"
+               name="CustHomePhone"
+               placeholder="e.g. 403-555-8192"
+               required />
 
         <label for="custBusPhone">Business Phone (optional):</label>
-        <input type="tel" id="custBusPhone" name="CustBusPhone" placeholder="e.g. 403-555-8192" />
+        <input type="tel" id="custBusPhone"
+               name="CustBusPhone"
+               placeholder="e.g. 403-555-8192" />
 
+        <!-- Email field with built-in browser validation -->
         <label for="custEmail">Email:</label>
         <input type="email" id="custEmail" name="CustEmail" required />
       </div>
 
+      <!-- ---------- FORM BUTTONS ---------- -->
       <div class="form-buttons">
         <button type="submit" class="primary-btn">Register</button>
         <button type="reset" class="secondary-btn">Clear</button>
@@ -97,11 +148,21 @@
     </form>
   </section>
 
+  <!-- =====================================================
+       FOOTER
+       Reuses global style and layout consistency.
+  ====================================================== -->
   <footer>
     <p>© 2025 Travel Experts Inc. All rights reserved.</p>
   </footer>
 
-  <!-- Registration Popup -->
+  <!-- =====================================================
+       REGISTRATION POPUP (confirmation window)
+       Shown dynamically when the backend confirms success.
+       Controlled entirely via script.js:
+         - Inserts customer’s first name in #popupName.
+         - Popup must be manually dismissed via Close button.
+  ====================================================== -->
   <div id="registerPopup" class="popup hidden">
     <div class="popup-content">
       ✅ Registration successful! Welcome aboard, <span id="popupName"></span>

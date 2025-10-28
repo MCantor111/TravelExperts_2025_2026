@@ -1,59 +1,85 @@
-<!-- ============================================
-     File: packages.html
-     Project: Travel Experts – Workshop 2
-     Author: Cantor Zapalski
-     Partner: Metacoda (ChatGPT)
-       Dynamically displays travel packages from the
-       Express + MySQL backend API.
-     ============================================ -->
+<!-- 
+  ============================================
+  File: packages.html
+  Project: Travel Experts – Workshop 2
+  Author: Cantor Zapalski
+  Partner: Metacoda (ChatGPT)
+  Date: 2025-10-27
+  ============================================
+  Description:
+    Displays travel packages dynamically from the
+    Express + MySQL backend API.
+    Uses script.js to fetch data and insert it into the
+    #packages-container grid.
+  ============================================
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ================= META & TITLE ================= -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Packages | Travel Experts</title>
+
+  <!-- ================= STYLES & SCRIPT ================= -->
+  <!-- style.css contains sitewide design; script.js dynamically fetches package data -->
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
+
+  <!-- =====================================================
+       Inline styling section
+       This CSS complements style.css with page-specific design:
+       grid layout, hover glow, and card styling for package tiles.
+  ====================================================== -->
   <style>
-  #packages-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.5rem;
-    padding: 1.5rem;
-  }
+    /* Container grid for all package cards */
+    #packages-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
 
-  .card {
-    border: 1px solid #66fcf1;
-    border-radius: 8px;
-    padding: 1rem;
-    background: #0b0c10;
-    color: #c5c6c7;
-    box-shadow: 0 0 12px rgba(102, 252, 241, 0.15);
-    transition: transform 0.2s ease;
-  }
+    /* Individual package cards */
+    .card {
+      border: 1px solid #66fcf1;                          /* cyan accent border */
+      border-radius: 8px;
+      padding: 1rem;
+      background: #0b0c10;                                /* dark background */
+      color: #c5c6c7;                                     /* soft gray text */
+      box-shadow: 0 0 12px rgba(102, 252, 241, 0.15);     /* subtle glow */
+      transition: transform 0.2s ease;                    /* smooth hover animation */
+    }
 
-  .card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 18px rgba(102, 252, 241, 0.25);
-  }
+    /* Card hover effects */
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 18px rgba(102, 252, 241, 0.25);
+    }
 
-  .card h3 {
-    margin-top: 0;
-    color: #66fcf1;
-  }
+    /* Package title heading */
+    .card h3 {
+      margin-top: 0;
+      color: #66fcf1;
+    }
 
-  .started {
-    color: #ff4c4c !important;
-    font-weight: bold;
-    text-shadow: 0 0 8px rgba(255, 76, 76, 0.6);
-    letter-spacing: 0.5px;
-  }
-</style>
-
+    /* Red “STARTED” indicator for active packages */
+    .started {
+      color: #ff4c4c !important;
+      font-weight: bold;
+      text-shadow: 0 0 8px rgba(255, 76, 76, 0.6);
+      letter-spacing: 0.5px;
+    }
+  </style>
 </head>
 
 <body>
-  <!-- HEADER -->
+  <!-- =====================================================
+       HEADER SECTION
+       Includes title and navigation links shared across all pages.
+       The “active” class visually highlights the current page.
+  ====================================================== -->
   <header>
     <h1>Travel Experts</h1>
     <nav>
@@ -64,18 +90,32 @@
     </nav>
   </header>
 
-  <!-- HERO -->
+  <!-- =====================================================
+       HERO SECTION
+       Provides the page heading and a brief subtitle clarifying that
+       package data is dynamically loaded from the database.
+  ====================================================== -->
   <section id="hero">
     <h2>Our Exclusive Travel Packages</h2>
     <p>All packages displayed below are live from the database.</p>
   </section>
 
-  <!-- PACKAGES -->
+  <!-- =====================================================
+       PACKAGES DISPLAY SECTION
+       The #packages-container div is populated at runtime by
+       JavaScript (script.js), which retrieves data from the backend
+       endpoint: GET /api/packages
+  ====================================================== -->
   <section id="packages">
-    <div id="packages-container"><p>Loading packages...</p></div>
+    <div id="packages-container">
+      <p>Loading packages...</p> <!-- Shown briefly before fetch completes -->
+    </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- =====================================================
+       FOOTER SECTION
+       Displays consistent copyright text.
+  ====================================================== -->
   <footer>
     <p>© 2025 Travel Experts Inc. All rights reserved.</p>
   </footer>

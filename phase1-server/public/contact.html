@@ -4,25 +4,36 @@
   Project: Travel Experts – Workshop 1
   Author: Cantor Zapalski
   Partner: Metacoda (ChatGPT)
-  Date: 2025-10-20
+  Date: 2025-10-27
+  ============================================
   Description:
-    Enhanced Contact page with validated form,
-    company HQ details, and dynamic agency/agent listings.
+    Enhanced Contact page featuring:
+    - Validated form for customer inquiries.
+    - Static headquarters details.
+    - Dynamic agency and agent listings (fetched via /api/agencies).
+    - Clean, responsive design styled with gradients and glow effects.
   ============================================
 -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ================= META & TITLE ================= -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Travel Experts | Contact</title>
 
+  <!-- Linked stylesheet & script -->
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
 
+  <!-- =====================================================
+       PAGE-SPECIFIC STYLING
+       Extends the global style.css with local fixes for layout
+       and animations specific to the Contact page.
+  ====================================================== -->
   <style>
-    /* === CONTACT PAGE LOCAL FIXES === */
+    /* === CONTACT SECTION WRAPPER === */
     #contact {
       text-align: center;
       padding: 2rem 1rem;
@@ -30,6 +41,7 @@
       margin: auto;
     }
 
+    /* === CONTACT FORM === */
     #contactForm {
       display: flex;
       flex-direction: column;
@@ -57,6 +69,7 @@
       width: 100%;
     }
 
+    /* === SEND BUTTON === */
     #contactForm button {
       align-self: center;
       background: linear-gradient(90deg, #45a29e 0%, #66fcf1 100%);
@@ -76,7 +89,7 @@
       box-shadow: 0 0 30px rgba(102, 252, 241, 0.6);
     }
 
-    /* === HQ INFO === */
+    /* === HQ INFORMATION CARD === */
     #company-info {
       background: var(--surface);
       border-radius: 12px;
@@ -97,7 +110,9 @@
       color: var(--text);
     }
 
-    /* === AGENCIES GRID (dynamic from /api/agencies) === */
+    /* === DYNAMIC AGENCIES GRID ===
+       Populated via fetch("/api/agencies") in script.js
+    */
     .agency-grid {
       display: flex;
       flex-wrap: wrap;
@@ -163,7 +178,10 @@
 </head>
 
 <body>
-  <!-- ================= HEADER ================= -->
+  <!-- =====================================================
+       HEADER
+       Displays navigation bar, consistent across all pages.
+  ====================================================== -->
   <header>
     <h1>Travel Experts</h1>
     <nav>
@@ -174,9 +192,13 @@
     </nav>
   </header>
 
-  <!-- ================= MAIN ================= -->
+  <!-- =====================================================
+       MAIN SECTION
+       Contains the hero image, contact form, HQ info,
+       and dynamic agency listings.
+  ====================================================== -->
   <main>
-    <!-- === HERO SECTION === -->
+    <!-- === HERO === -->
     <section id="hero">
       <h2>Get in Touch</h2>
       <img 
@@ -190,6 +212,7 @@
       <h2>We’d Love to Hear From You</h2>
       <p>Have a question about our trips, or just want to say hello? Drop us a line below!</p>
 
+      <!-- Simple contact form; local-only, not stored in database -->
       <form id="contactForm" onsubmit="return sendMessage()">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" placeholder="Enter your name" required />
@@ -212,7 +235,7 @@
         <p><strong>Hours:</strong> Mon–Fri: 9:00AM–6:00PM MDT</p>
       </div>
 
-      <!-- === AGENCIES & AGENTS (dynamic) === -->
+      <!-- === AGENCIES & AGENTS (Dynamic via API) === -->
       <section id="agencies-section">
         <h2>Our Local Agencies & Agents</h2>
         <div id="agencies-container" class="agency-grid">
@@ -222,22 +245,30 @@
     </section>
   </main>
 
-  <!-- ================= FOOTER ================= -->
+  <!-- =====================================================
+       FOOTER
+       Standard global footer.
+  ====================================================== -->
   <footer>
     <p>© 2025 Travel Experts Inc. All rights reserved.</p>
   </footer>
 
-  <!-- Inline validation (backup only; main logic lives in script.js) -->
+  <!-- =====================================================
+       INLINE BACKUP VALIDATION SCRIPT
+       (Primary validation handled in script.js)
+       Provides fallback if main JS fails to load.
+  ====================================================== -->
   <script>
     function sendMessage() {
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
       const message = document.getElementById('message').value.trim();
+
       if (!name || !email || !message) {
         alert('Please fill out all fields before sending!');
         return false;
       }
-      alert(\`Thank you, \${name}! Your message has been sent. We'll get back to you soon.\`);
+      alert(`Thank you, ${name}! Your message has been sent. We'll get back to you soon.`);
       return true;
     }
   </script>

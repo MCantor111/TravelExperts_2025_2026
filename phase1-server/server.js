@@ -1,32 +1,51 @@
-/*
+/* 
   ============================================
   File: server.js
   Project: Travel Experts – Workshop 2 
   Author: Cantor Zapalski
-  Partners: Metacoda (ChatGPT)
-  Date: 2025-10-22
+  Partner: Metacoda (ChatGPT)
+  Date: 2025-10-27
+  ============================================
+  Description:
+    Express.js backend server for the Travel Experts web app.
+    Handles API endpoints for:
+      - Customer registration
+      - Package retrieval
+      - Agency and agent listings
+      - Customer bookings
+    Integrates with MySQL via a connection pool.
+    Also serves static front-end files from /public.
   ============================================
 */
 
-import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
-import pool from "./db.js";
-import path from "path";
-import { fileURLToPath } from "url";
+// --------------------- Imports ---------------------
+import express from "express";          // Core web server framework
+import cors from "cors";                // Enables cross-origin requests (frontend → backend)
+import bodyParser from "body-parser";   // Parses incoming JSON request bodies
+import pool from "./db.js";             // MySQL connection pool (from db.js)
+import path from "path";                // Handles filesystem paths for serving HTML
+import { fileURLToPath } from "url";    // Required to emulate __dirname in ES modules
 
+// --------------------- Initialization ---------------------
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;  // Uses environment port or defaults to 3000
 
-// ---------- Middleware ----------
-app.use(cors());
-app.use(bodyParser.json());
+// --------------------- Middleware ---------------------
+app.use(cors());            // Allow cross-origin access from frontend
+app.use(bodyParser.json()); // Parse JSON payloads automatically
 
+// The following lines re-create __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ---------- API: Register new customer ----------
+// ===============================================================
+//  ROUTES SECTION – Each endpoint defines an HTTP operation
+// ===============================================================
+
+// ---------- POST /api/register ----------
+// Inserts a new customer record into the database
 app.post("/api/register", async (req, res) => {
+  // Destructure expected input fields from request body
   const {
     CustFirstName,
     CustLastName,
@@ -40,10 +59,12 @@ app.post("/api/register", async (req, res) => {
     CustEmail
   } = req.body;
 
+  // Quick validation check for required fields
   if (!CustFirstName || !CustLastName || !CustEmail) {
     return res.status(400).json({ ok: false, message: "Missing required fields" });
   }
 
+  // Parameterized SQL query to safely insert a new customer
   const sql = `
     INSERT INTO customers
       (CustFirstName, CustLastName, CustAddress, CustCity, CustProv,
@@ -52,6 +73,7 @@ app.post("/api/register", async (req, res) => {
   `;
 
   try {
+    // Execute insert and retrieve the result
     const [result] = await pool.query(sql, [
       CustFirstName,
       CustLastName,
@@ -73,7 +95,8 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-// ---------- API: Get all travel packages ----------
+// ---------- GET /api/packages ----------
+// Retrieves all available travel packages from the database
 app.get("/api/packages", async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM packages");
@@ -84,9 +107,11 @@ app.get("/api/packages", async (req, res) => {
   }
 });
 
-// ---------- API: Get all agencies with their agents ----------
+// ---------- GET /api/agencies ----------
+// Returns all agency records along with their associated agents
 app.get("/api/agencies", async (req, res) => {
   try {
+    // Join agencies with their agents
     const [rows] = await pool.query(`
       SELECT 
         a.AgencyId, a.AgncyAddress, a.AgncyCity, a.AgncyProv, a.AgncyPostal,
@@ -97,6 +122,7 @@ app.get("/api/agencies", async (req, res) => {
       ORDER BY a.AgencyId;
     `);
 
+    // Group results by agency for a nested JSON structure
     const agencies = {};
     for (const row of rows) {
       if (!agencies[row.AgencyId]) {
@@ -109,10 +135,11 @@ app.get("/api/agencies", async (req, res) => {
           AgncyCountry: row.AgncyCountry,
           AgncyPhone: row.AgncyPhone,
           AgncyFax: row.AgncyFax,
-          Agents: []
+          Agents: [] // Nested array for linked agents
         };
       }
 
+      // Push each agent belonging to that agency (if present)
       if (row.AgentId) {
         agencies[row.AgencyId].Agents.push({
           AgtFirstName: row.AgtFirstName,
@@ -130,20 +157,26 @@ app.get("/api/agencies", async (req, res) => {
   }
 });
 
-// ---------- Serve static front-end *after* API routes ----------
+// ===============================================================
+//  FRONTEND SERVING SECTION
+// ===============================================================
+
+// Serve all static frontend files (HTML, CSS, JS) from /public folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// ---------- Default Route ----------
+// Default route → index.html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ---------- API: Create a booking ----------
+// ===============================================================
+//  POST /api/bookings – Create a new travel booking
+// ===============================================================
 app.post("/api/bookings", async (req, res) => {
   const { CustFirstName, CustLastName, CustEmail, PackageName, TravelerCount } = req.body;
 
   try {
-    // 1️⃣ Find the customer
+    // 1️⃣ Lookup existing customer by name and email
     const [rows] = await pool.query(
       `SELECT CustomerId FROM customers 
        WHERE CustFirstName = ? AND CustLastName = ? AND CustEmail = ? 
@@ -152,12 +185,15 @@ app.post("/api/bookings", async (req, res) => {
     );
 
     if (rows.length === 0) {
-      return res.status(404).json({ ok: false, message: "Customer not found. Please register first." });
+      return res.status(404).json({
+        ok: false,
+        message: "Customer not found. Please register first."
+      });
     }
 
     const CustomerId = rows[0].CustomerId;
 
-    // 2️⃣ Look up the package ID by name
+    // 2️⃣ Lookup package ID by name to link booking properly
     const [pkgRows] = await pool.query(
       "SELECT PackageId, PkgName FROM packages WHERE PkgName = ? LIMIT 1",
       [PackageName]
@@ -169,9 +205,9 @@ app.post("/api/bookings", async (req, res) => {
 
     const { PackageId, PkgName } = pkgRows[0];
 
-    // 3️⃣ Generate booking number and insert
-    const BookingNo = "BK" + Math.floor(Math.random() * 1000000);
-    const TripTypeId = "B"; // default
+    // 3️⃣ Create random booking number and insert record
+    const BookingNo = "BK" + Math.floor(Math.random() * 1000000); // Example: BK423710
+    const TripTypeId = "B"; // Default type (Business)
 
     const [bookResult] = await pool.query(
       `INSERT INTO bookings 
@@ -180,7 +216,7 @@ app.post("/api/bookings", async (req, res) => {
       [BookingNo, TravelerCount, CustomerId, TripTypeId, PackageId]
     );
 
-    // 4️⃣ Respond with confirmation data
+    // 4️⃣ Respond with success payload for frontend modal display
     res.json({
       ok: true,
       booking: {
@@ -199,7 +235,11 @@ app.post("/api/bookings", async (req, res) => {
   }
 });
 
-// ---------- Start Server ----------
+// ===============================================================
+//  SERVER STARTUP
+// ===============================================================
+
+// Begin listening for incoming requests
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
