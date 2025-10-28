@@ -8,7 +8,7 @@ It does not read from a database, and instead only accepts:
 User Id: 'userid'
 Password: 'password'
 
-The functionality in packages is merely placeholder,
+The functionality in contacts is merely placeholder,
 and does not actually post its contents anywhere
 
 Instructions ::
