@@ -1,42 +1,39 @@
-/* 
-  ============================================
+/*  
+  ============================================================
   File: script.js
   Project: Travel Experts – Workshop 1
-  Author: Cantor (Matte Black ᗰტ)
-  Partner: Metacoda (☣️ケイオバリア☣️)
-  Date: 2025-10-18
+  Author: Cantor Zapalski  
+  Partner: Metacoda (ChatGPT)
+  Date: 2025-10-27
   Description:
-    Core JavaScript logic for Travel Experts website.
-    Handles smooth scrolling, image slideshow, form
-    validation (contact + registration), and popup 
-    booking simulation.
-  ============================================
+    Core JavaScript for the Travel Experts website.  
+    Handles smooth navigation, rotating hero images, 
+    registration form validation, auto-formatting, 
+    and booking popup logic.
+  ============================================================
 */
 
-// =========================
-// PAGE INITIALIZATION
-// =========================
-document.addEventListener("DOMContentLoaded", () => { 
-  console.log("TravelExperts JS initialized ✈️");
+// ------------------------------------------------------------
+// INITIALIZATION
+// ------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Travel Experts JS initialized ✈️");
 
-  // -------------------------
-  // Smooth Scrolling
-  // -------------------------
-  // Adds smooth scrolling for internal anchor links (those beginning with "#").
+  // Smooth scrolling for in-page anchor links
   document.querySelectorAll("a[href^='#']").forEach(link => {
     link.addEventListener("click", e => {
       const target = document.querySelector(link.getAttribute("href"));
       if (target) {
-        e.preventDefault();  // prevent instant jump
+        e.preventDefault();
         target.scrollIntoView({ behavior: "smooth" });
       }
     });
   });
 
-  // -------------------------
-  // Hero Image Slideshow
-  // -------------------------
-  // Cycles through a predefined list of hero images every 5 seconds.
+  // ----------------------------------------------------------
+  // HERO IMAGE SLIDESHOW
+  // Rotates through predefined hero images every 5 seconds.
+  // ----------------------------------------------------------
   const heroImg = document.querySelector("#hero img");
   if (heroImg) {
     const heroImages = [
@@ -51,79 +48,101 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 5000);
   }
 
-  // -------------------------
-  // Card Hover Debug
-  // -------------------------
-  // Console log triggered when hovering over destination cards.
-  // Useful for testing hover interactions or analytics logging.
+  // ----------------------------------------------------------
+  // DEBUG LOG: Card hover feedback (in browser console)
+  // ----------------------------------------------------------
   document.querySelectorAll(".card").forEach(card => {
     card.addEventListener("mouseenter", () =>
       console.log(`Hovering: ${card.dataset.place}`)
     );
   });
 
-  // -------------------------
-  // Auto-Formatting Handlers
-  // -------------------------
-  // Automatically format Canadian phone numbers and postal codes
-  // in the registration form as the user types.
+  // ----------------------------------------------------------
+  // INPUT AUTO-FORMATTING (Phone & Postal Code)
+  // ----------------------------------------------------------
   const phoneInput = document.getElementById("custHomePhone");
+  const busPhoneInput = document.getElementById("custBusPhone");
   const postalInput = document.getElementById("custPostal");
 
-  // Auto-format phone number: "4035558192" → "403-555-8192"
+  // Format home phone as XXX-XXX-XXXX
   if (phoneInput) {
     phoneInput.addEventListener("input", () => {
-      let digits = phoneInput.value.replace(/\D/g, ""); // remove non-numeric chars
-      if (digits.length > 10) digits = digits.slice(0, 10);
-
-      if (digits.length > 6) {
-        phoneInput.value = `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
-      } else if (digits.length > 3) {
-        phoneInput.value = `${digits.slice(0, 3)}-${digits.slice(3)}`;
-      } else {
-        phoneInput.value = digits;
-      }
+      let digits = phoneInput.value.replace(/\D/g, "").slice(0, 10);
+      if (digits.length > 6)
+        phoneInput.value = `${digits.slice(0,3)}-${digits.slice(3,6)}-${digits.slice(6)}`;
+      else if (digits.length > 3)
+        phoneInput.value = `${digits.slice(0,3)}-${digits.slice(3)}`;
+      else phoneInput.value = digits;
     });
   }
 
-  // Auto-format postal code: "t2n1n4" → "T2N 1N4"
+  // Format business phone identically (home phone clone)
+  if (busPhoneInput) {
+    busPhoneInput.addEventListener("input", () => {
+      let digits = busPhoneInput.value.replace(/\D/g, "").slice(0, 10);
+      if (digits.length > 6)
+        busPhoneInput.value = `${digits.slice(0,3)}-${digits.slice(3,6)}-${digits.slice(6)}`;
+      else if (digits.length > 3)
+        busPhoneInput.value = `${digits.slice(0,3)}-${digits.slice(3)}`;
+      else busPhoneInput.value = digits;
+    });
+  }
+
+  // Format postal code as ANA NAN (auto uppercased)
   if (postalInput) {
     postalInput.addEventListener("input", () => {
-      let val = postalInput.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-      if (val.length > 6) val = val.slice(0, 6);
-      if (val.length > 3) {
-        postalInput.value = `${val.slice(0, 3)} ${val.slice(3)}`;
-      } else {
-        postalInput.value = val;
+      let val = postalInput.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6);
+      postalInput.value = val.length > 3 ? `${val.slice(0,3)} ${val.slice(3)}` : val;
+    });
+  }
+
+  // ----------------------------------------------------------
+  // REGISTRATION FORM SUBMISSION HANDLER
+  // Performs client-side validation before fetch() POST.
+  // ----------------------------------------------------------
+  const form = document.getElementById("registrationForm");
+  if (form) {
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      if (!validateRegistration()) return; // abort on errors
+
+      const formData = new FormData(form);
+      try {
+        const response = await fetch(form.action, { method: "POST", body: formData });
+
+        if (!response.ok) throw new Error("Server returned a non-OK status.");
+
+        alert("✅ Registration successful! Thank you for joining Travel Experts.");
+        form.reset();
+      } catch (err) {
+        // Custom friendly message when server is offline
+        if (err.message.includes("Failed to fetch"))
+          alert("❌ Cannot find endpoint to POST to.\n\nPlease ensure the PHP server is running.");
+        else alert("❌ Something went wrong: " + err.message);
       }
     });
   }
-});
+}); // END DOMContentLoaded
 
 
-// =========================
-// NAVIGATION HIGHLIGHT
-// =========================
-// Dynamically highlights navigation links based on the section
-// currently visible in the viewport during scrolling.
+// ------------------------------------------------------------
+// SCROLL-BASED NAVIGATION HIGHLIGHT
+// ------------------------------------------------------------
 window.addEventListener("scroll", () => {
   document.querySelectorAll("nav a[href^='#']").forEach(link => {
     const section = document.querySelector(link.getAttribute("href"));
     if (section) {
       const rect = section.getBoundingClientRect();
-      link.style.color = rect.top <= 150 && rect.bottom >= 150
-        ? "var(--highlight)"
-        : "var(--accent)";
+      link.style.color =
+        rect.top <= 150 && rect.bottom >= 150 ? "var(--highlight)" : "var(--accent)";
     }
   });
 });
 
 
-// =========================
-// CONTACT FORM VALIDATION
-// =========================
-// Simple client-side validation for the contact page form.
-// Ensures that all fields are filled before submission.
+// ------------------------------------------------------------
+// CONTACT FORM VALIDATION (ALERT CONFIRMATION)
+// ------------------------------------------------------------
 function sendMessage() {
   const name = document.getElementById("name")?.value.trim();
   const email = document.getElementById("email")?.value.trim();
@@ -133,130 +152,94 @@ function sendMessage() {
     alert("Please fill out all fields before sending!");
     return false;
   }
-
-  alert(`Thank you, ${name}! Your message has been sent. We'll get back to you soon.`);
+  alert(`Thank you, ${name}! Your message has been sent.`);
   return true;
 }
 
 
-// =========================
-// REGISTRATION FORM VALIDATION
-// =========================
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("registrationForm");
-  if (!form) return; // skip if not on registration page
-
-  // Handle form submission manually using Fetch API
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault(); // prevent default page reload
-    if (!validateRegistration()) return;
-
-    const formData = new FormData(form);
-
-    try {
-      // Simulate POST submission to PHP server-side validator
-      const response = await fetch(form.action, {
-        method: "POST",
-        body: formData,
-      });
-
-      const text = await response.text();
-      console.log("Server response:", text);
-
-      // Display server response dynamically below form
-      const resultDiv = document.createElement("div");
-      resultDiv.style.marginTop = "2rem";
-      resultDiv.style.padding = "1rem";
-      resultDiv.style.background = "rgba(69,162,158,0.15)";
-      resultDiv.style.borderRadius = "8px";
-      resultDiv.innerHTML = text;
-      form.parentNode.appendChild(resultDiv);
-
-    } catch (err) {
-      alert("Something went wrong: " + err.message);
-    }
-  });
-});
-
-
-// -------------------------
-// validateRegistration()
-// -------------------------
-// Performs input validation for the registration form.
-// Checks for completeness, proper formatting, and valid email,
-// phone, and postal code formats (Canadian).
+// ------------------------------------------------------------
+// REGISTRATION FORM VALIDATION (FIELD-LEVEL INLINE ERRORS)
+// ------------------------------------------------------------
 function validateRegistration() {
   const required = [
     "custFirstName", "custLastName", "custAddress", "custCity", "custProv",
     "custCountry", "custPostal", "custEmail", "custHomePhone", "userId", "custPassword"
   ];
+  let valid = true;
 
-  // Ensure all required fields are filled
+  // Clear old error messages
+  document.querySelectorAll(".error-message").forEach(el => el.remove());
+  document.querySelectorAll(".invalid").forEach(el => el.classList.remove("invalid"));
+
+  // Helper function to display error inline
+  const showError = (id, message) => {
+    const field = document.getElementById(id);
+    if (!field) return;
+    field.classList.add("invalid");
+    const error = document.createElement("span");
+    error.className = "error-message";
+    error.textContent = message;
+    field.insertAdjacentElement("afterend", error);
+    valid = false;
+  };
+
+  // Required fields check
   for (const id of required) {
     const field = document.getElementById(id);
-    if (!field.value.trim()) {
-      alert(`Please fill out the ${id.replace("cust", "").replace(/([A-Z])/g, " $1")} field.`);
-      field.focus();
-      return false;
-    }
+    if (!field.value.trim()) showError(id, "This field is required.");
   }
 
-  // Validate email format
-  const email = document.getElementById("custEmail").value.trim();
+  // Email pattern check
+  const email = document.getElementById("custEmail")?.value.trim();
   const simpleEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!simpleEmail.test(email)) {
-    alert("Please enter a valid email address.");
-    return false;
-  }
+  if (email && !simpleEmail.test(email))
+    showError("custEmail", "Enter a valid email address.");
 
-  // Validate phone number (format: 403-555-8192)
-  const phone = document.getElementById("custHomePhone").value.trim();
+  // Phone number patterns
   const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
-  if (!phonePattern.test(phone)) {
-    alert("Please enter a valid phone number in the format 403-555-8192.");
-    return false;
-  }
+  const phone = document.getElementById("custHomePhone")?.value.trim();
+  if (phone && !phonePattern.test(phone))
+    showError("custHomePhone", "Use format: 403-555-8192");
 
-  // Validate postal code (format: T2N 1N4)
-  const postal = document.getElementById("custPostal").value.trim();
+  const busPhone = document.getElementById("custBusPhone")?.value.trim();
+  if (busPhone && !phonePattern.test(busPhone))
+    showError("custBusPhone", "Use format: 403-555-8192");
+
+  // Postal code pattern (ANA NAN)
+  const postal = document.getElementById("custPostal")?.value.trim();
   const postalPattern = /^[A-Z]\d[A-Z] \d[A-Z]\d$/;
-  if (!postalPattern.test(postal)) {
-    alert("Please enter a valid postal code in the format T2N 1N4.");
-    return false;
-  }
+  if (postal && !postalPattern.test(postal))
+    showError("custPostal", "Use format: T2N 1N4");
 
-  return true; // all validations passed
+  return valid;
 }
 
 
-// =========================
-// BOOKING POPUP VALIDATION
-// =========================
-// Simulates a user verification process when booking trips
-// from the Packages page. Only allows the hard-coded demo login.
+// ------------------------------------------------------------
+// BOOKING POPUP LOGIN SIMULATION
+// ------------------------------------------------------------
 function openBookingPopup(destination) {
   const popup = document.getElementById("login-popup");
   popup.classList.remove("hidden");
   popup.dataset.destination = destination;
 }
 
-// Cancel button hides the popup without doing anything.
+// Cancel booking popup
 document.getElementById("popup-cancel").addEventListener("click", () => {
   document.getElementById("login-popup").classList.add("hidden");
 });
 
-// Submit button checks user credentials (mock validation).
+// Submit popup (login mock)
 document.getElementById("popup-submit").addEventListener("click", () => {
   const userId = document.getElementById("popup-userid").value.trim();
   const password = document.getElementById("popup-password").value.trim();
   const popup = document.getElementById("login-popup");
   const destination = popup.dataset.destination || "your selected trip";
 
-  if (userId === "userid" && password === "password") {
+  if (userId === "userid" && password === "password")
     alert(`✅ Booking confirmed for ${destination}!`);
-  } else {
+  else
     alert("❌ Invalid credentials. Please try again.");
-  }
 
   popup.classList.add("hidden");
 });
